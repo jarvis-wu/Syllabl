@@ -1,0 +1,6 @@
+framework module Pods_Syllable {
+  umbrella header "Pods-Syllable-umbrella.h"
+
+  export *
+  module * { export * }
+}
