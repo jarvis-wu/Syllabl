@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import FirebaseStorage
 
 class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
 
@@ -15,6 +16,8 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
         case record
         case play
     }
+
+    var newUser: User!
 
     var recordingSession: AVAudioSession!
     var audioRecorder: AVAudioRecorder!
@@ -40,6 +43,22 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
 
     @IBAction func didTapStartOverButton(_ sender: UIButton) {
         setMode(mode: .record)
+    }
+
+    @IBAction func didTapContinueButton(_ sender: SButton) {
+        /// - TODO: start activity indicator
+        let audioURL = getDocumentsDirectory().appendingPathComponent("\(newUser.id).m4a")
+        let storageRef = Storage.storage().reference().child("audio-recordings/\(newUser.id).m4a")
+        let metadata = StorageMetadata()
+        metadata.contentType = "audio/m4a"
+        storageRef.putFile(from: audioURL, metadata: metadata) { (metadata, error) in
+            /// - TODO: end activity indicator
+            if let error = error {
+                print("Error when uploading audio recording: \(error.localizedDescription)")
+            } else {
+                self.performSegue(withIdentifier: "ShowHomeViewController", sender: self)
+            }
+        }
     }
 
     override func viewDidLoad() {
@@ -107,7 +126,7 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
     }
 
     func startRecording() {
-        let audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+        let audioFilename = getDocumentsDirectory().appendingPathComponent("\(newUser.id).m4a")
 
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -119,7 +138,7 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
         mediumHapticGenerator.prepare()
         mediumHapticGenerator.impactOccurred()
 
-        // need to have this, otherwise the haptic is not fired
+        // need to have this delay, otherwise the haptic is not fired (yes super weird I know)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             do {
                 self.audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
@@ -182,7 +201,7 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
 
     @objc func didTapRecordButton(sender : UIGestureRecognizer) {
         guard mode == .play else { return }
-        let audioURL = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+        let audioURL = getDocumentsDirectory().appendingPathComponent("\(newUser.id).m4a")
         recordButtonBackgroundView.backgroundColor = .systemGreen
 
         do {
@@ -199,7 +218,7 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
             audioPlayer.play()
             // add animation
         } catch {
-            print("print failed")
+            print("play failed")
         }
     }
 

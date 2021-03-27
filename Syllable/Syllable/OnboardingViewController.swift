@@ -8,6 +8,10 @@
 
 import UIKit
 import SKCountryPicker
+import GoogleSignIn
+import FirebaseAuth
+import FirebaseDatabase
+import FirebaseStorage
 
 class OnboardingViewController: UIViewController {
 
@@ -21,9 +25,13 @@ class OnboardingViewController: UIViewController {
     let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
 
     var newUser: User!
+    var databaseRef = Database.database().reference()
+    var storageRef = Storage.storage().reference()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        guard let _: GIDGoogleUser = GIDSignIn.sharedInstance()?.currentUser,
+              let user = Auth.auth().currentUser else { return }
 
         continueButton.disable()
         avatarButton.adjustsImageWhenHighlighted = false
@@ -42,7 +50,7 @@ class OnboardingViewController: UIViewController {
 
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil) // remove back button title
 
-        newUser = User(id: 0) // how do we get a new id here?
+        newUser = User(id: user.uid)
         newUser.delegate = self
 
         hapticGenerator.prepare()
@@ -90,6 +98,45 @@ class OnboardingViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         } else {
             openCountryPickerController()
+        }
+    }
+
+    @IBAction func didTapContinueButton(_ sender: SButton) {
+        completeProfile()
+        /// - TODO: start activity indicator
+    }
+
+    func completeProfile() {
+        // Upload basic info to realtime database
+        databaseRef.child("users").child(newUser.id).setValue([
+            "firstName" : newUser.firstName,
+            "middleName" : newUser.middleName,
+            "lastName" : newUser.lastName,
+            "countryCode" : newUser.country?.countryCode
+        ]) { (error, ref) in
+            if let error = error {
+                print("Error when uploading basic info: \(error.localizedDescription)")
+                /// - TODO: end activity indicator
+            } else {
+                // Upload profile picture to firebase storage
+                if let profilePictureData: Data = self.newUser.profilePicture?.pngData() {
+                    let metadata = StorageMetadata()
+                    metadata.contentType = "image/png"
+                    /// - TODO: We may want to compress the image first (consider jpegData)
+                    let pictureStorageRef = self.storageRef.child("profile-pictures/\(self.newUser.id).png")
+                    pictureStorageRef.putData(profilePictureData, metadata: metadata) { (metadata, error) in
+                        /// - TODO: end activity indicator
+                        if let error = error {
+                            print("Error when uploading profile picture: \(error.localizedDescription)")
+                        } else {
+                            self.performSegue(withIdentifier: "ShowInitialRecordViewController", sender: self)
+                        }
+                    }
+                } else { // no picture selected
+                    /// - TODO: end activity indicator
+                    self.performSegue(withIdentifier: "ShowInitialRecordViewController", sender: self)
+                }
+            }
         }
     }
 
@@ -160,6 +207,13 @@ class OnboardingViewController: UIViewController {
         avatarButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 32, weight: .semibold), forImageIn: .normal)
         avatarButton.tintColor = .white
         avatarButton.clipsToBounds = true
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowInitialRecordViewController", let destination = segue.destination as? InitialRecordViewController {
+            // pass the user object
+            destination.newUser = self.newUser
+        }
     }
 
 }

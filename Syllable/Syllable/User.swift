@@ -20,7 +20,7 @@ struct Country {
 
 class User {
 
-    public let id: Int
+    public let id: String
     public private(set) var firstName: String?
     public private(set) var middleName: String?
     public private(set) var lastName: String?
@@ -33,7 +33,7 @@ class User {
 
     // model order of names? Last name comes first?
 
-    init(id: Int,
+    init(id: String,
          firstName: String? = nil,
          middleName: String? = nil,
          lastName: String? = nil,

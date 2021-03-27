@@ -9,13 +9,13 @@
 import UIKit
 
 protocol HomeTableViewCellDelegate {
-    func shouldPlayPronunciation(withId id: Int)
+    func shouldPlayPronunciation(withId id: String)
 }
 
 class HomeTableViewCell: UITableViewCell {
 
     var delegate: HomeTableViewCellDelegate?
-    var userId: Int?
+    var userId: String?
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var secondaryInfoLabel: UILabel!

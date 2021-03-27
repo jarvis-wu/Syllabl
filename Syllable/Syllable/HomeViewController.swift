@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
 
     var users = [User]()
 
-    var statuses = [Int : Status]()
+    var statuses = [String : Status]() // mock data
 
     var filteredUsers = [User]()
 
@@ -50,35 +50,35 @@ class HomeViewController: UIViewController {
     /// - TODO: pagination?
     private func populateUsers() {
         users = [
-            User(id: 0, firstName: "Viktor", lastName: "Aarstad", faculty: "Software Engineering", classNumber: "2021"),
-            User(id: 1, firstName: "Iris", lastName: "Alcocer", faculty: "Software Engineering", classNumber: "2021"),
-            User(id: 2, firstName: "Geosha", lastName: "Alexander", faculty: "Computer Science", classNumber: "2021"),
-            User(id: 3, firstName: "Jaymore", lastName: "Austin", faculty: "Physics", classNumber: "2021"),
-            User(id: 4, firstName: "Hsueh", middleName: "Feng", lastName: "Bai", faculty: "Computer Science", classNumber: "2021"),
-            User(id: 5, firstName: "Chunying", lastName: "Bao", faculty: "Software Engineering", classNumber: "2021"),
-            User(id: 6, firstName: "Maha", lastName: "Bhaumik", faculty: "Political Science", classNumber: "2021"),
-            User(id: 7, firstName: "Acilio", lastName: "Bona", faculty: "Software Engineering", classNumber: "2021"),
-            User(id: 8, firstName: "Wenbin", lastName: "Bu", faculty: "Computer Science", classNumber: "2021")
+            User(id: "0", firstName: "Viktor", lastName: "Aarstad", faculty: "Software Engineering", classNumber: "2021"),
+            User(id: "1", firstName: "Iris", lastName: "Alcocer", faculty: "Software Engineering", classNumber: "2021"),
+            User(id: "2", firstName: "Geosha", lastName: "Alexander", faculty: "Computer Science", classNumber: "2021"),
+            User(id: "3", firstName: "Jaymore", lastName: "Austin", faculty: "Physics", classNumber: "2021"),
+            User(id: "4", firstName: "Hsueh", middleName: "Feng", lastName: "Bai", faculty: "Computer Science", classNumber: "2021"),
+            User(id: "5", firstName: "Chunying", lastName: "Bao", faculty: "Software Engineering", classNumber: "2021"),
+            User(id: "6", firstName: "Maha", lastName: "Bhaumik", faculty: "Political Science", classNumber: "2021"),
+            User(id: "7", firstName: "Acilio", lastName: "Bona", faculty: "Software Engineering", classNumber: "2021"),
+            User(id: "8", firstName: "Wenbin", lastName: "Bu", faculty: "Computer Science", classNumber: "2021")
         ]
     }
 
     private func populateStatuses() {
         statuses = [
-            0 : .needPractice,
-            1 : .none,
-            2 : .learned,
-            3 : .learned,
-            4 : .needPractice,
-            5 : .needPractice,
-            6 : .none,
-            7 : .none,
-            8 : .learned,
+            "0" : .needPractice,
+            "1" : .none,
+            "2" : .learned,
+            "3" : .learned,
+            "4" : .needPractice,
+            "5" : .needPractice,
+            "6" : .none,
+            "7" : .none,
+            "8" : .learned,
         ]
     }
 
     func filterContentForSearchText(_ searchText: String) {
-      filteredUsers = users.filter { (item: User) -> Bool in
-        let fullName = "\(item.firstName) \(item.lastName)"
+      filteredUsers = users.filter { (user: User) -> Bool in
+        let fullName = user.getFullName() ?? ""
         return fullName.lowercased().contains(searchText.lowercased())
       }
       tableView.reloadData()
@@ -145,7 +145,7 @@ extension HomeViewController: UISearchResultsUpdating {
 
 extension HomeViewController: HomeTableViewCellDelegate {
 
-    func shouldPlayPronunciation(withId id: Int) {
+    func shouldPlayPronunciation(withId id: String) {
         print("retrieve recording and play for user \(id).")
     }
 

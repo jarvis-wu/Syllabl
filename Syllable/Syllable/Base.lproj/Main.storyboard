@@ -29,11 +29,11 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="Jeu-RS-TnS"/>
                                 </constraints>
-                                <state key="normal" title="Join">
+                                <state key="normal" title="Sign in with Google">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <segue destination="kUA-so-Pg1" kind="show" id="D9n-m1-IOg"/>
+                                    <action selector="didTapSignInButton:" destination="1gq-oI-siW" eventType="touchUpInside" id="mmi-64-c1P"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Join now to learn how to pronounce people’s names correctly!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rdy-jY-7S6">
@@ -48,6 +48,9 @@
                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="Muh-gO-WvJ">
+                                <rect key="frame" x="197" y="465" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="DEd-xA-Y4e"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -56,7 +59,9 @@
                             <constraint firstItem="rdy-jY-7S6" firstAttribute="top" secondItem="Ibm-T5-UnX" secondAttribute="bottom" constant="30" id="C1v-bt-Y7O"/>
                             <constraint firstItem="rdy-jY-7S6" firstAttribute="centerX" secondItem="DEd-xA-Y4e" secondAttribute="centerX" id="ChO-Mc-q8i"/>
                             <constraint firstItem="DEd-xA-Y4e" firstAttribute="bottom" secondItem="Ijf-kv-y1g" secondAttribute="bottom" constant="50" id="EUg-Wc-xqE"/>
+                            <constraint firstItem="Muh-gO-WvJ" firstAttribute="centerY" secondItem="DEd-xA-Y4e" secondAttribute="centerY" id="N24-Qr-JP4"/>
                             <constraint firstItem="YI1-gh-udT" firstAttribute="leading" secondItem="DEd-xA-Y4e" secondAttribute="leading" constant="30" id="QgZ-Se-65z"/>
+                            <constraint firstItem="Muh-gO-WvJ" firstAttribute="centerX" secondItem="DEd-xA-Y4e" secondAttribute="centerX" id="RbD-pD-ZIb"/>
                             <constraint firstItem="Ibm-T5-UnX" firstAttribute="centerX" secondItem="DEd-xA-Y4e" secondAttribute="centerX" id="VKX-5g-wNI"/>
                             <constraint firstItem="YI1-gh-udT" firstAttribute="centerX" secondItem="DEd-xA-Y4e" secondAttribute="centerX" id="Vlh-Ag-bec"/>
                             <constraint firstItem="Ijf-kv-y1g" firstAttribute="centerX" secondItem="DEd-xA-Y4e" secondAttribute="centerX" id="d5U-hS-bm5"/>
@@ -68,13 +73,15 @@
                     </view>
                     <navigationItem key="navigationItem" id="6c4-Rr-Q5d"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="Muh-gO-WvJ" id="eik-Kq-dxj"/>
+                        <outlet property="googleSignInButton" destination="Ijf-kv-y1g" id="hMs-xY-4mW"/>
                         <outlet property="iconImageView" destination="Ibm-T5-UnX" id="ZaV-eN-zID"/>
-                        <outlet property="joinButton" destination="Ijf-kv-y1g" id="BOn-ER-5qb"/>
+                        <segue destination="kUA-so-Pg1" kind="show" identifier="ShowOnboardingViewController" id="qgG-Pp-50w"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VYm-FS-k2d" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="630" y="-30"/>
+            <point key="canvasLocation" x="765" y="-30"/>
         </scene>
         <!--Onboarding-->
         <scene sceneID="dWJ-9s-nZW">
@@ -127,7 +134,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <segue destination="TAV-27-vBH" kind="show" id="EK1-7T-HXN"/>
+                                    <action selector="didTapContinueButton:" destination="kUA-so-Pg1" eventType="touchUpInside" id="igc-iq-p1j"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A profile picture is optional, but it helps people match you with your name!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dQ2-WA-1i6">
@@ -177,11 +184,12 @@
                         <outlet property="firstNameField" destination="I1N-Xv-ywU" id="5Bn-fe-kwt"/>
                         <outlet property="lastNameField" destination="Fjy-CA-Msg" id="Mgc-63-wAH"/>
                         <outlet property="middleNameField" destination="54S-Sh-8um" id="RdV-64-mud"/>
+                        <segue destination="TAV-27-vBH" kind="show" identifier="ShowInitialRecordViewController" id="0T8-hS-21H"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0ZE-T8-NAP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1403" y="-30"/>
+            <point key="canvasLocation" x="1516" y="-30"/>
         </scene>
         <!--Home-->
         <scene sceneID="Ejz-G4-Sfe">
@@ -299,7 +307,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gg9-9w-ff5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4356.521739130435" y="-30.133928571428569"/>
+            <point key="canvasLocation" x="4541" y="-30"/>
         </scene>
         <!--Profile-->
         <scene sceneID="wEe-jv-5ZA">
@@ -315,7 +323,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uou-iq-VRe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5055" y="-30"/>
+            <point key="canvasLocation" x="5297" y="-30"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="7hn-t9-QVz">
@@ -333,7 +341,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ewq-ri-rTc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-157" y="-30"/>
+            <point key="canvasLocation" x="1" y="-30"/>
         </scene>
         <!--Home-->
         <scene sceneID="zjo-2b-bBd">
@@ -352,7 +360,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="quS-Oq-yD3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3659" y="-30"/>
+            <point key="canvasLocation" x="3797" y="-30"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="ZPT-b5-HTq">
@@ -371,7 +379,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yLe-Kz-av7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2943" y="-30"/>
+            <point key="canvasLocation" x="3049" y="-30"/>
         </scene>
         <!--Settings-->
         <scene sceneID="NDw-3v-wNU">
@@ -426,7 +434,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <segue destination="9cH-dB-4Ad" kind="presentation" modalPresentationStyle="fullScreen" id="Ii9-SS-DEQ"/>
+                                    <action selector="didTapContinueButton:" destination="TAV-27-vBH" eventType="touchUpInside" id="qdc-pd-GU7"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap and hold the button, say your name as normal, then release." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lXI-lh-xEK">
@@ -487,11 +495,12 @@
                         <outlet property="recordButton" destination="5XH-jt-eIm" id="UNY-28-6hR"/>
                         <outlet property="recordButtonBackgroundView" destination="WA1-WC-aax" id="uny-3O-qyi"/>
                         <outlet property="startOverButton" destination="LX0-3h-lFS" id="FhL-j0-twk"/>
+                        <segue destination="9cH-dB-4Ad" kind="presentation" identifier="ShowHomeViewController" modalPresentationStyle="fullScreen" id="I4V-Q0-3D9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="z1P-gs-SoR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2162" y="-30"/>
+            <point key="canvasLocation" x="2288" y="-30"/>
         </scene>
     </scenes>
     <resources>
