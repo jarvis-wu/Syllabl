@@ -329,7 +329,7 @@
         <!--Navigation Controller-->
         <scene sceneID="7hn-t9-QVz">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="tSD-5o-TLk" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="RootNavigationViewController" automaticallyAdjustsScrollViewInsets="NO" id="tSD-5o-TLk" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="E6x-qG-n4s">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -366,7 +366,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="ZPT-b5-HTq">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="9cH-dB-4Ad" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="9cH-dB-4Ad" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="Zqm-Hv-qDc"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Zds-dh-fq0">
