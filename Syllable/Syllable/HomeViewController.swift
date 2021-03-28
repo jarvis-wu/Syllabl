@@ -80,7 +80,11 @@ class HomeViewController: UIViewController {
                         } else {
                             profileImage = UIImage(data: data!)
                         }
-                        self.users.append(User(id: userId, userInfoDict: userInfoDict, profilePicture: profileImage, status: status))
+                        let user = User(id: userId, userInfoDict: userInfoDict, profilePicture: profileImage, status: status)
+                        if user.id == Auth.auth().currentUser?.uid {
+                            User.currentUser = user
+                        }
+                        self.users.append(user)
                         self.tableView.reloadData() // inefficient?
                     }
                 })

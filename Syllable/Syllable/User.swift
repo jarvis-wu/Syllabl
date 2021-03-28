@@ -20,6 +20,8 @@ struct Country {
 
 class User {
 
+    static var currentUser: User?
+
     public let id: String
     public private(set) var firstName: String?
     public private(set) var middleName: String?
