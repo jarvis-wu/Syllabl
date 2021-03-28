@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import FirebaseDatabase
 import FirebaseStorage
+import FirebaseAuth
 
 enum Status {
     case none
@@ -20,7 +21,6 @@ enum Status {
 class HomeViewController: UIViewController {
 
     var users = [User]()
-//    var statuses = [String : Status]() // mock data
     var filteredUsers = [User]()
 
     var databaseRef = Database.database().reference()
@@ -45,7 +45,6 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         populateUsers()
-//        populateStatuses()
         tableView.dataSource = self
         tableView.delegate = self
         tableView.tableFooterView = UIView()
@@ -58,23 +57,37 @@ class HomeViewController: UIViewController {
 
     /// - TODO: pagination?
     private func populateUsers() {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
         refHandle = databaseRef.child("users").observe(DataEventType.value, with: { (snapshot) in
             let dataDict = snapshot.value as? [String : [String : AnyObject]] ?? [:]
             for (userId, userInfoDict) in dataDict {
-                var profileImage: UIImage? = nil
-                let profilePictureRef = self.storageRef.child("profile-pictures/\(userId).png")
-                profilePictureRef.getData(maxSize: 3 * 1024 * 1024) { (data, error) in
-                    if let error = error {
-                        print("Error when downloading the profile picture: \(error.localizedDescription)")
-                    } else {
-                        profileImage = UIImage(data: data!)
+                var status = Status.none
+                self.refHandle = self.databaseRef.child("statuses").child(currentUid).child(userId).observe(DataEventType.value, with: { (snapshot) in
+                    let statusString = snapshot.value as? String
+                    switch statusString {
+                    case "learned":
+                        status = .learned
+                    case "needPractice":
+                        status = .needPractice
+                    default:
+                        break // default none
                     }
-                    self.users.append(User(id: userId, userInfoDict: userInfoDict, profilePicture: profileImage))
-                    self.tableView.reloadData() // inefficient?
-                }
+                    var profileImage: UIImage? = nil
+                    let profilePictureRef = self.storageRef.child("profile-pictures/\(userId).png")
+                    profilePictureRef.getData(maxSize: 3 * 1024 * 1024) { (data, error) in
+                        if let error = error {
+                            print("Error when downloading the profile picture: \(error.localizedDescription)")
+                        } else {
+                            profileImage = UIImage(data: data!)
+                        }
+                        self.users.append(User(id: userId, userInfoDict: userInfoDict, profilePicture: profileImage, status: status))
+                        self.tableView.reloadData() // inefficient?
+                    }
+                })
             }
         })
 
+        // mock data
 //        users = [
 //            User(id: "0", firstName: "Viktor", lastName: "Aarstad", faculty: "Software Engineering", classNumber: "2021"),
 //            User(id: "1", firstName: "Iris", lastName: "Alcocer", faculty: "Software Engineering", classNumber: "2021"),
@@ -87,20 +100,6 @@ class HomeViewController: UIViewController {
 //            User(id: "8", firstName: "Wenbin", lastName: "Bu", faculty: "Computer Science", classNumber: "2021")
 //        ]
     }
-
-//    private func populateStatuses() {
-//        statuses = [
-//            "0" : .needPractice,
-//            "1" : .none,
-//            "2" : .learned,
-//            "3" : .learned,
-//            "4" : .needPractice,
-//            "5" : .needPractice,
-//            "6" : .none,
-//            "7" : .none,
-//            "8" : .learned,
-//        ]
-//    }
 
     func filterContentForSearchText(_ searchText: String) {
       filteredUsers = users.filter { (user: User) -> Bool in
@@ -134,15 +133,14 @@ extension HomeViewController: UITableViewDataSource {
         cell.nameLabel.text = user.getFullName()
         cell.secondaryInfoLabel.text = user.getSecondaryLabel()
         cell.profileImageView.image = user.profilePicture
-//        guard let status = statuses[user.id] else { return UITableViewCell() }
-//        switch status {
-//        case .none:
-//            cell.statusView.backgroundColor = .systemGray5
-//        case .learned:
-//            cell.statusView.backgroundColor = .systemGreen
-//        case .needPractice:
-//            cell.statusView.backgroundColor = .systemYellow
-//        }
+        switch user.status {
+        case .none:
+            cell.statusView.backgroundColor = .systemGray5
+        case .learned:
+            cell.statusView.backgroundColor = .systemGreen
+        case .needPractice:
+            cell.statusView.backgroundColor = .systemYellow
+        }
         return cell
     }
 

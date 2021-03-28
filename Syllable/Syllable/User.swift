@@ -28,6 +28,7 @@ class User {
     public private(set) var faculty: String?
     public private(set) var classNumber: String?
     public private(set) var profilePicture: UIImage?
+    public private(set) var status: Status = .none
 
     var delegate: UserEditDelegate?
 
@@ -51,7 +52,7 @@ class User {
         self.profilePicture = nil
     }
 
-    init(id: String, userInfoDict: [String : AnyObject], profilePicture: UIImage?) {
+    init(id: String, userInfoDict: [String : AnyObject], profilePicture: UIImage?, status: Status) {
         self.id = id
         self.firstName = userInfoDict["firstName"] as? String
         self.middleName = userInfoDict["middleName"] as? String
@@ -61,9 +62,9 @@ class User {
             self.country = Country(name: countryName, countryCode: countryCode)
         }
         self.setProfilePicture(profilePicture: profilePicture)
+        self.setStatus(status: status)
         // faculty
         // class number
-        // profile picture
     }
 
     func setFirstName(firstName: String?) {
@@ -99,6 +100,11 @@ class User {
     func setProfilePicture(profilePicture: UIImage?) {
         self.profilePicture = profilePicture
         delegate?.didUpdateUserInformation()
+    }
+
+    func setStatus(status: Status) {
+        self.status = status
+//        delegate?.didUpdateUserInformation()
     }
 
     func getFullName() -> String? {
