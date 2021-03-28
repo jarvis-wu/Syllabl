@@ -29,7 +29,7 @@ class User {
     public private(set) var classNumber: String?
     public private(set) var profilePicture: UIImage?
 
-    var delegate: UserEditDelegate!
+    var delegate: UserEditDelegate?
 
     // model order of names? Last name comes first?
 
@@ -51,39 +51,54 @@ class User {
         self.profilePicture = nil
     }
 
+    init(id: String, userInfoDict: [String : AnyObject], profilePicture: UIImage?) {
+        self.id = id
+        self.firstName = userInfoDict["firstName"] as? String
+        self.middleName = userInfoDict["middleName"] as? String
+        self.lastName = userInfoDict["lastName"] as? String
+        if let countryCode = userInfoDict["countryCode"] as? String,
+           let countryName = userInfoDict["countryName"] as? String {
+            self.country = Country(name: countryName, countryCode: countryCode)
+        }
+        self.setProfilePicture(profilePicture: profilePicture)
+        // faculty
+        // class number
+        // profile picture
+    }
+
     func setFirstName(firstName: String?) {
         self.firstName = (firstName == "" ? nil : firstName)
-        delegate.didUpdateUserInformation()
+        delegate?.didUpdateUserInformation()
     }
 
     func setMiddleName(middleName: String?) {
         self.middleName = (middleName == "" ? nil : middleName)
-        delegate.didUpdateUserInformation()
+        delegate?.didUpdateUserInformation()
     }
 
     func setLastName(lastName: String?) {
         self.lastName = (lastName == "" ? nil : lastName)
-        delegate.didUpdateUserInformation()
+        delegate?.didUpdateUserInformation()
     }
 
     func setCountry(country: Country?) {
         self.country = country
-        delegate.didUpdateUserInformation()
+        delegate?.didUpdateUserInformation()
     }
 
     func setFaculty(faculty: String?) {
         self.faculty = (faculty == "" ? nil : faculty)
-        delegate.didUpdateUserInformation()
+        delegate?.didUpdateUserInformation()
     }
 
     func setClassNumber(classNumber: String?) {
         self.classNumber = (classNumber == "" ? nil : classNumber)
-        delegate.didUpdateUserInformation()
+        delegate?.didUpdateUserInformation()
     }
 
     func setProfilePicture(profilePicture: UIImage?) {
         self.profilePicture = profilePicture
-        delegate.didUpdateUserInformation()
+        delegate?.didUpdateUserInformation()
     }
 
     func getFullName() -> String? {
@@ -97,12 +112,8 @@ class User {
         return "\(firstName) \(middleNameString)\(lastName)"
     }
 
-    func getProfilePictureName() -> String {
-        return "photo\(id)"
-    }
-
     func getSecondaryLabel() -> String? {
-        guard let faculty = faculty, let classNumber = classNumber else { return nil }
+        guard let faculty = faculty, let classNumber = classNumber else { return "Unknown faculty and class" }
         return "\(faculty) \(classNumber)"
     }
 

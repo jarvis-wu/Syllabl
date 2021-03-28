@@ -112,7 +112,8 @@ class OnboardingViewController: UIViewController {
             "firstName" : newUser.firstName,
             "middleName" : newUser.middleName,
             "lastName" : newUser.lastName,
-            "countryCode" : newUser.country?.countryCode
+            "countryCode" : newUser.country?.countryCode,
+            "countryName" : newUser.country?.name
         ]) { (error, ref) in
             if let error = error {
                 print("Error when uploading basic info: \(error.localizedDescription)")
