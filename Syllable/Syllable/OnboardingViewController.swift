@@ -21,6 +21,7 @@ class OnboardingViewController: UIViewController {
     @IBOutlet weak var lastNameField: UITextField!
     @IBOutlet weak var countryButton: UIButton!
     @IBOutlet weak var continueButton: SButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
 
@@ -102,10 +103,12 @@ class OnboardingViewController: UIViewController {
     }
 
     @IBAction func didTapContinueButton(_ sender: SButton) {
+        continueButton.disable()
+        activityIndicator.startAnimating()
         completeProfile()
-        /// - TODO: start activity indicator
     }
 
+    /// - TODO: use "defer" to prevent duplication
     func completeProfile() {
         // Upload basic info to realtime database
         databaseRef.child("users").child(newUser.id).setValue([
@@ -117,7 +120,7 @@ class OnboardingViewController: UIViewController {
         ]) { (error, ref) in
             if let error = error {
                 print("Error when uploading basic info: \(error.localizedDescription)")
-                /// - TODO: end activity indicator
+                self.activityIndicator.stopAnimating()
             } else {
                 // Upload profile picture to firebase storage
                 if let profilePictureData: Data = self.newUser.profilePicture?.pngData() {
@@ -126,15 +129,15 @@ class OnboardingViewController: UIViewController {
                     /// - TODO: We may want to compress the image first (consider jpegData)
                     let pictureStorageRef = self.storageRef.child("profile-pictures/\(self.newUser.id).png")
                     pictureStorageRef.putData(profilePictureData, metadata: metadata) { (metadata, error) in
-                        /// - TODO: end activity indicator
                         if let error = error {
                             print("Error when uploading profile picture: \(error.localizedDescription)")
                         } else {
+                            self.activityIndicator.stopAnimating()
                             self.performSegue(withIdentifier: "ShowInitialRecordViewController", sender: self)
                         }
                     }
                 } else { // no picture selected
-                    /// - TODO: end activity indicator
+                    self.activityIndicator.stopAnimating()
                     self.performSegue(withIdentifier: "ShowInitialRecordViewController", sender: self)
                 }
             }

@@ -64,14 +64,18 @@ class LandingViewController: UIViewController, GIDSignInDelegate {
                     print("Error: no uid.")
                     return
                 }
-                self.refHandle = self.databaseRef.child("users/\(uid)").observe(DataEventType.value, with: { (snapshot) in
-                    let isNewUser = (snapshot.value == nil)
+                self.databaseRef.child("users/\(uid)").getData { (error, snapshot) in
+                    let isNewUser = !snapshot.exists()
                     if isNewUser { // sign up
-                        self.performSegue(withIdentifier: "ShowOnboardingViewController", sender: self)
+                        DispatchQueue.main.async {
+                            self.performSegue(withIdentifier: "ShowOnboardingViewController", sender: self)
+                        }
                     } else { // directly go to home screen
-                        self.performSegue(withIdentifier: "ShowTabController", sender: self)
+                        DispatchQueue.main.async {
+                            self.performSegue(withIdentifier: "ShowTabController", sender: self)
+                        }
                     }
-                })
+                }
             }
         }
     }

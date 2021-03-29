@@ -59,6 +59,7 @@ class HomeViewController: UIViewController {
     private func populateUsers() {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         refHandle = databaseRef.child("users").observe(DataEventType.value, with: { (snapshot) in
+            self.users = []
             let dataDict = snapshot.value as? [String : [String : AnyObject]] ?? [:]
             for (userId, userInfoDict) in dataDict {
                 var status = Status.none
@@ -153,7 +154,7 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+        return 70
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

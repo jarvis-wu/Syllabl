@@ -40,19 +40,21 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var startOverButton: UIButton!
     @IBOutlet weak var continueButton: SButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     @IBAction func didTapStartOverButton(_ sender: UIButton) {
         setMode(mode: .record)
     }
 
     @IBAction func didTapContinueButton(_ sender: SButton) {
-        /// - TODO: start activity indicator
+        activityIndicator.startAnimating()
+        continueButton.disable()
         let audioURL = getDocumentsDirectory().appendingPathComponent("\(newUser.id).m4a")
         let storageRef = Storage.storage().reference().child("audio-recordings/\(newUser.id).m4a")
         let metadata = StorageMetadata()
         metadata.contentType = "audio/m4a"
         storageRef.putFile(from: audioURL, metadata: metadata) { (metadata, error) in
-            /// - TODO: end activity indicator
+            self.activityIndicator.stopAnimating()
             if let error = error {
                 print("Error when uploading audio recording: \(error.localizedDescription)")
             } else {
@@ -80,7 +82,7 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
     func prepareRecording() {
         recordingSession = AVAudioSession.sharedInstance()
         do {
-            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
             try recordingSession.setActive(true)
             recordingSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async { if !allowed { self.audioPermissionDenied() } }
