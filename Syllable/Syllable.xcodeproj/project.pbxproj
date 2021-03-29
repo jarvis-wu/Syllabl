@@ -19,6 +19,7 @@
 		31A6615025F8651000D84747 /* InitialRecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A6614F25F8651000D84747 /* InitialRecordViewController.swift */; };
 		31B1CE8D26102121007C8ECA /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE8C26102120007C8ECA /* SettingsViewController.swift */; };
 		31B1CE90261023C6007C8ECA /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */; };
+		31B1CE9426122160007C8ECA /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE932612215E007C8ECA /* ImageResizer.swift */; };
 		31CA0EEE25E7E370002451DA /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA0EED25E7E370002451DA /* OnboardingViewController.swift */; };
 		31CA0EF025E7E6D6002451DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA0EEF25E7E6D6002451DA /* HomeViewController.swift */; };
 		31CA0F1225E8B86E002451DA /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */; };
@@ -40,6 +41,7 @@
 		31A6614F25F8651000D84747 /* InitialRecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialRecordViewController.swift; sourceTree = "<group>"; };
 		31B1CE8C26102120007C8ECA /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
+		31B1CE932612215E007C8ECA /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
 		31CA0EED25E7E370002451DA /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		31CA0EEF25E7E6D6002451DA /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */,
 				31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */,
 				310B0CF825E7DD090067A8D4 /* SButton.swift */,
+				31B1CE932612215E007C8ECA /* ImageResizer.swift */,
 				310B0CE625E11B940067A8D4 /* Main.storyboard */,
 				310B0CE925E11B970067A8D4 /* Assets.xcassets */,
 				310B0CEB25E11B970067A8D4 /* LaunchScreen.storyboard */,
@@ -256,6 +259,7 @@
 				310B0CF525E157B60067A8D4 /* LandingViewController.swift in Sources */,
 				31CA0F1225E8B86E002451DA /* HomeTableViewCell.swift in Sources */,
 				31B1CE8D26102121007C8ECA /* SettingsViewController.swift in Sources */,
+				31B1CE9426122160007C8ECA /* ImageResizer.swift in Sources */,
 				31CA0EEE25E7E370002451DA /* OnboardingViewController.swift in Sources */,
 				31A6615025F8651000D84747 /* InitialRecordViewController.swift in Sources */,
 				31B1CE90261023C6007C8ECA /* SettingsTableViewCell.swift in Sources */,

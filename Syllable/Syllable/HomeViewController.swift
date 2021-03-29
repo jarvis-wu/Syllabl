@@ -74,7 +74,7 @@ class HomeViewController: UIViewController {
                         break // default none
                     }
                     var profileImage: UIImage? = nil
-                    let profilePictureRef = self.storageRef.child("profile-pictures/\(userId).png")
+                    let profilePictureRef = self.storageRef.child("profile-pictures/\(userId).jpg")
                     profilePictureRef.getData(maxSize: 3 * 1024 * 1024) { (data, error) in
                         if let error = error {
                             print("Error when downloading the profile picture: \(error.localizedDescription)")

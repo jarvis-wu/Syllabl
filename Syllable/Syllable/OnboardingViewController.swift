@@ -122,23 +122,29 @@ class OnboardingViewController: UIViewController {
                 print("Error when uploading basic info: \(error.localizedDescription)")
                 self.activityIndicator.stopAnimating()
             } else {
-                // Upload profile picture to firebase storage
-                if let profilePictureData: Data = self.newUser.profilePicture?.pngData() {
-                    let metadata = StorageMetadata()
-                    metadata.contentType = "image/png"
-                    /// - TODO: We may want to compress the image first (consider jpegData)
-                    let pictureStorageRef = self.storageRef.child("profile-pictures/\(self.newUser.id).png")
-                    pictureStorageRef.putData(profilePictureData, metadata: metadata) { (metadata, error) in
-                        if let error = error {
-                            print("Error when uploading profile picture: \(error.localizedDescription)")
-                        } else {
-                            self.activityIndicator.stopAnimating()
-                            self.performSegue(withIdentifier: "ShowInitialRecordViewController", sender: self)
+                // Uploading profile pic
+                var hasError = false
+                defer {
+                    self.activityIndicator.stopAnimating()
+                    if !hasError {
+                        self.performSegue(withIdentifier: "ShowInitialRecordViewController", sender: self)
+                    }
+                }
+                guard let originalPicture = self.newUser.profilePicture else { return }
+                ImageResizer.resize(image: originalPicture, maxByte: 800000) { image in
+                    guard let resizedImage = image else { return }
+                    if let profilePictureData: Data = resizedImage.jpegData(compressionQuality: 1.0) {
+                        let metadata = StorageMetadata()
+                        metadata.contentType = "image/jpg"
+                        let pictureStorageRef = self.storageRef.child("profile-pictures/\(self.newUser.id).jpg")
+                        pictureStorageRef.putData(profilePictureData, metadata: metadata) { (metadata, error) in
+                            if let error = error {
+                                hasError = true
+                                print("Error when uploading profile picture: \(error.localizedDescription)")
+                            }
+                            return
                         }
                     }
-                } else { // no picture selected
-                    self.activityIndicator.stopAnimating()
-                    self.performSegue(withIdentifier: "ShowInitialRecordViewController", sender: self)
                 }
             }
         }
