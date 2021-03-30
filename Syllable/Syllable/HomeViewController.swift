@@ -28,6 +28,7 @@ class HomeViewController: UIViewController {
     var refHandle: DatabaseHandle!
 
     var audioPlayer: AVAudioPlayer!
+    var audioSession: AVAudioSession!
 
     var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
@@ -53,6 +54,20 @@ class HomeViewController: UIViewController {
         searchController.searchBar.placeholder = "Search for a name or a program"
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        preparePlaying()
+    }
+
+    func preparePlaying() {
+        audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
+            try audioSession.setActive(true)
+            audioSession.requestRecordPermission() { allowed in
+                DispatchQueue.main.async { if !allowed { print("Permission denied") } }
+            }
+        } catch {
+            print("Error when preparing audio recorder: \(error)")
+        }
     }
 
     /// - TODO: pagination?
@@ -91,19 +106,6 @@ class HomeViewController: UIViewController {
                 })
             }
         })
-
-        // mock data
-//        users = [
-//            User(id: "0", firstName: "Viktor", lastName: "Aarstad", faculty: "Software Engineering", classNumber: "2021"),
-//            User(id: "1", firstName: "Iris", lastName: "Alcocer", faculty: "Software Engineering", classNumber: "2021"),
-//            User(id: "2", firstName: "Geosha", lastName: "Alexander", faculty: "Computer Science", classNumber: "2021"),
-//            User(id: "3", firstName: "Jaymore", lastName: "Austin", faculty: "Physics", classNumber: "2021"),
-//            User(id: "4", firstName: "Hsueh", middleName: "Feng", lastName: "Bai", faculty: "Computer Science", classNumber: "2021"),
-//            User(id: "5", firstName: "Chunying", lastName: "Bao", faculty: "Software Engineering", classNumber: "2021"),
-//            User(id: "6", firstName: "Maha", lastName: "Bhaumik", faculty: "Political Science", classNumber: "2021"),
-//            User(id: "7", firstName: "Acilio", lastName: "Bona", faculty: "Software Engineering", classNumber: "2021"),
-//            User(id: "8", firstName: "Wenbin", lastName: "Bu", faculty: "Computer Science", classNumber: "2021")
-//        ]
     }
 
     func filterContentForSearchText(_ searchText: String) {
@@ -159,6 +161,9 @@ extension HomeViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let userDetailViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "UserDetailViewController") as! UserDetailViewController
+        userDetailViewController.user = users[indexPath.row]
+        navigationController?.pushViewController(userDetailViewController, animated: true)
     }
 
 }

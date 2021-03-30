@@ -88,6 +88,7 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
                 DispatchQueue.main.async { if !allowed { self.audioPermissionDenied() } }
             }
         } catch {
+            print("Error when preparing audio recorder: \(error)")
             self.audioPermissionDenied()
         }
     }
