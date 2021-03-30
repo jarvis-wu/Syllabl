@@ -21,6 +21,9 @@
 		31B1CE90261023C6007C8ECA /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */; };
 		31B1CE9426122160007C8ECA /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE932612215E007C8ECA /* ImageResizer.swift */; };
 		31B1CE972612B84C007C8ECA /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE962612B84C007C8ECA /* UserDetailViewController.swift */; };
+		31B1CEA42612F69A007C8ECA /* FDAudioContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CEA12612F69A007C8ECA /* FDAudioContext.swift */; };
+		31B1CEA52612F69A007C8ECA /* FDWaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CEA22612F69A007C8ECA /* FDWaveformView.swift */; };
+		31B1CEA62612F69A007C8ECA /* FDWaveformRenderOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CEA32612F69A007C8ECA /* FDWaveformRenderOperation.swift */; };
 		31CA0EEE25E7E370002451DA /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA0EED25E7E370002451DA /* OnboardingViewController.swift */; };
 		31CA0EF025E7E6D6002451DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA0EEF25E7E6D6002451DA /* HomeViewController.swift */; };
 		31CA0F1225E8B86E002451DA /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */; };
@@ -44,6 +47,9 @@
 		31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		31B1CE932612215E007C8ECA /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
 		31B1CE962612B84C007C8ECA /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
+		31B1CEA12612F69A007C8ECA /* FDAudioContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FDAudioContext.swift; sourceTree = "<group>"; };
+		31B1CEA22612F69A007C8ECA /* FDWaveformView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FDWaveformView.swift; sourceTree = "<group>"; };
+		31B1CEA32612F69A007C8ECA /* FDWaveformRenderOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FDWaveformRenderOperation.swift; sourceTree = "<group>"; };
 		31CA0EED25E7E370002451DA /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		31CA0EEF25E7E6D6002451DA /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
@@ -87,17 +93,10 @@
 			children = (
 				310B0CE025E11B940067A8D4 /* AppDelegate.swift */,
 				310B0CE225E11B940067A8D4 /* SceneDelegate.swift */,
-				3121020A25F9A059003F7F5C /* User.swift */,
-				310B0CF425E157B60067A8D4 /* LandingViewController.swift */,
-				31CA0EED25E7E370002451DA /* OnboardingViewController.swift */,
-				31A6614F25F8651000D84747 /* InitialRecordViewController.swift */,
-				31CA0EEF25E7E6D6002451DA /* HomeViewController.swift */,
-				31B1CE8C26102120007C8ECA /* SettingsViewController.swift */,
-				31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */,
-				31B1CE962612B84C007C8ECA /* UserDetailViewController.swift */,
-				31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */,
-				310B0CF825E7DD090067A8D4 /* SButton.swift */,
-				31B1CE932612215E007C8ECA /* ImageResizer.swift */,
+				31B1CEA02612F671007C8ECA /* Models */,
+				31B1CE9F2612F64C007C8ECA /* Views */,
+				31B1CE9A2612F627007C8ECA /* View Controllers */,
+				31B1CE992612F60C007C8ECA /* Tools */,
 				310B0CE625E11B940067A8D4 /* Main.storyboard */,
 				310B0CE925E11B970067A8D4 /* Assets.xcassets */,
 				310B0CEB25E11B970067A8D4 /* LaunchScreen.storyboard */,
@@ -105,6 +104,56 @@
 				3121021426008108003F7F5C /* GoogleService-Info.plist */,
 			);
 			path = Syllable;
+			sourceTree = "<group>";
+		};
+		31B1CE992612F60C007C8ECA /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				31B1CE932612215E007C8ECA /* ImageResizer.swift */,
+				31B1CEA82612F6A1007C8ECA /* FDWaveformView */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		31B1CE9A2612F627007C8ECA /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				310B0CF425E157B60067A8D4 /* LandingViewController.swift */,
+				31CA0EED25E7E370002451DA /* OnboardingViewController.swift */,
+				31A6614F25F8651000D84747 /* InitialRecordViewController.swift */,
+				31CA0EEF25E7E6D6002451DA /* HomeViewController.swift */,
+				31B1CE8C26102120007C8ECA /* SettingsViewController.swift */,
+				31B1CE962612B84C007C8ECA /* UserDetailViewController.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		31B1CE9F2612F64C007C8ECA /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				310B0CF825E7DD090067A8D4 /* SButton.swift */,
+				31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */,
+				31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		31B1CEA02612F671007C8ECA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3121020A25F9A059003F7F5C /* User.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		31B1CEA82612F6A1007C8ECA /* FDWaveformView */ = {
+			isa = PBXGroup;
+			children = (
+				31B1CEA12612F69A007C8ECA /* FDAudioContext.swift */,
+				31B1CEA32612F69A007C8ECA /* FDWaveformRenderOperation.swift */,
+				31B1CEA22612F69A007C8ECA /* FDWaveformView.swift */,
+			);
+			path = FDWaveformView;
 			sourceTree = "<group>";
 		};
 		41E592831B4659C3163428E4 /* Frameworks */ = {
@@ -260,14 +309,17 @@
 			files = (
 				310B0CE125E11B940067A8D4 /* AppDelegate.swift in Sources */,
 				310B0CF525E157B60067A8D4 /* LandingViewController.swift in Sources */,
+				31B1CEA42612F69A007C8ECA /* FDAudioContext.swift in Sources */,
 				31B1CE972612B84C007C8ECA /* UserDetailViewController.swift in Sources */,
 				31CA0F1225E8B86E002451DA /* HomeTableViewCell.swift in Sources */,
 				31B1CE8D26102121007C8ECA /* SettingsViewController.swift in Sources */,
 				31B1CE9426122160007C8ECA /* ImageResizer.swift in Sources */,
 				31CA0EEE25E7E370002451DA /* OnboardingViewController.swift in Sources */,
 				31A6615025F8651000D84747 /* InitialRecordViewController.swift in Sources */,
+				31B1CEA52612F69A007C8ECA /* FDWaveformView.swift in Sources */,
 				31B1CE90261023C6007C8ECA /* SettingsTableViewCell.swift in Sources */,
 				3121020B25F9A059003F7F5C /* User.swift in Sources */,
+				31B1CEA62612F69A007C8ECA /* FDWaveformRenderOperation.swift in Sources */,
 				310B0CE325E11B940067A8D4 /* SceneDelegate.swift in Sources */,
 				310B0CF925E7DD090067A8D4 /* SButton.swift in Sources */,
 				31CA0EF025E7E6D6002451DA /* HomeViewController.swift in Sources */,
