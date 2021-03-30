@@ -19,6 +19,8 @@ class UserDetailViewController: UIViewController {
     var audioSession: AVAudioSession!
     var storageRef = Storage.storage().reference()
 
+    /// - TODO: put everything in a scroll view
+
     @IBOutlet weak var profileCardBackgroundView: UIView!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var fullNameLabel: UILabel!
@@ -29,6 +31,17 @@ class UserDetailViewController: UIViewController {
     @IBOutlet weak var playerCardBackgroundView: UIView!
     @IBOutlet weak var playerButton: UIButton!
     @IBOutlet weak var waveformView: FDWaveformView!
+    @IBOutlet weak var waveformLoadingActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var waveformLoadingLabel: UILabel!
+
+    @IBOutlet weak var practiceCardBackgroundView: UIView!
+    @IBOutlet weak var practiceTitleLabel: UILabel!
+    @IBOutlet weak var recordButtonBackgroundView: UIView!
+    @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var learnedButton: UIButton!
+    @IBOutlet weak var needPracticeButton: UIButton!
+    @IBOutlet weak var discardButton: UIButton!
+    @IBOutlet weak var requestEvaluationButton: SButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,13 +51,12 @@ class UserDetailViewController: UIViewController {
     }
 
     func setupUI() {
+        profileCardBackgroundView.layer.cornerRadius = 12
+        profileCardBackgroundView.layer.masksToBounds = true
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
         profileImageView.image = user?.profilePicture
         fullNameLabel.text = user?.getFullName()
         secondaryInfoLabel.text = user?.getSecondaryLabel()
-        profileCardBackgroundView.layer.cornerRadius = 12
-        profileCardBackgroundView.layer.masksToBounds = true
-        playerCardBackgroundView.layer.cornerRadius = 12
         if let countryCode = user.country?.countryCode {
             flagImageView.layer.cornerRadius = 4
             flagImageView.clipsToBounds = true
@@ -53,9 +65,20 @@ class UserDetailViewController: UIViewController {
         } else {
             flagImageView.removeFromSuperview()
         }
+
+        playerCardBackgroundView.layer.cornerRadius = 12
         waveformView.wavesColor = UIColor.systemGray4
         waveformView.progressColor = UIColor.systemBlue
         playerButton.isEnabled = false
+        waveformLoadingActivityIndicator.startAnimating()
+
+        practiceCardBackgroundView.layer.cornerRadius = 12
+        recordButtonBackgroundView.layer.cornerRadius = recordButtonBackgroundView.frame.height / 2
+        recordButton.layer.cornerRadius = recordButton.frame.height / 2
+        learnedButton.layer.cornerRadius = learnedButton.frame.height / 2
+        needPracticeButton.layer.cornerRadius = needPracticeButton.frame.height / 2
+        requestEvaluationButton.disable()
+        discardButton.isEnabled = false
     }
 
     func getDocumentsDirectory() -> URL {
@@ -75,6 +98,8 @@ class UserDetailViewController: UIViewController {
             if let error = error {
                 print("Error when downloading the audio: \(error.localizedDescription)")
             } else {
+                self.waveformLoadingActivityIndicator.stopAnimating()
+                self.waveformLoadingLabel.isHidden = true
                 self.playerButton.isEnabled = true
                 self.waveformView.audioURL = localUrl
             }
