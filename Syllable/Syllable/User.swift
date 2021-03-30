@@ -13,7 +13,7 @@ protocol UserEditDelegate {
     func didUpdateUserInformation()
 }
 
-struct Country {
+struct SCountry {
     let name: String
     let countryCode: String
 }
@@ -26,7 +26,7 @@ class User {
     public private(set) var firstName: String?
     public private(set) var middleName: String?
     public private(set) var lastName: String?
-    public private(set) var country: Country?
+    public private(set) var country: SCountry?
     public private(set) var faculty: String?
     public private(set) var classNumber: String?
     public private(set) var profilePicture: UIImage?
@@ -40,7 +40,7 @@ class User {
          firstName: String? = nil,
          middleName: String? = nil,
          lastName: String? = nil,
-         country: Country? = nil,
+         country: SCountry? = nil,
          faculty: String? = nil,
          classNumber: String? = nil,
          profilePicture: UIImage? = nil) {
@@ -61,7 +61,7 @@ class User {
         self.lastName = userInfoDict["lastName"] as? String
         if let countryCode = userInfoDict["countryCode"] as? String,
            let countryName = userInfoDict["countryName"] as? String {
-            self.country = Country(name: countryName, countryCode: countryCode)
+            self.country = SCountry(name: countryName, countryCode: countryCode)
         }
         self.setProfilePicture(profilePicture: profilePicture)
         self.setStatus(status: status)
@@ -84,7 +84,7 @@ class User {
         delegate?.didUpdateUserInformation()
     }
 
-    func setCountry(country: Country?) {
+    func setCountry(country: SCountry?) {
         self.country = country
         delegate?.didUpdateUserInformation()
     }

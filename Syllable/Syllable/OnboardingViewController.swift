@@ -152,7 +152,7 @@ class OnboardingViewController: UIViewController {
 
     func openCountryPickerController() {
         let countryPickerCountry = CountryPickerWithSectionViewController.presentController(on: self) { (country) in
-            let selectedCountry = Country(name: country.countryName, countryCode: country.countryCode)
+            let selectedCountry = SCountry(name: country.countryName, countryCode: country.countryCode)
             self.newUser.setCountry(country: selectedCountry)
             self.countryButton.setTitle(selectedCountry.name, for: .normal)
             self.countryButton.setTitleColor(.black, for: .normal)

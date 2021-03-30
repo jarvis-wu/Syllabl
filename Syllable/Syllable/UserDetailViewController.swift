@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SKCountryPicker
 
 class UserDetailViewController: UIViewController {
 
@@ -17,6 +18,7 @@ class UserDetailViewController: UIViewController {
     @IBOutlet weak var fullNameLabel: UILabel!
     @IBOutlet weak var secondaryInfoLabel: UILabel!
     @IBOutlet weak var bioLabel: UILabel!
+    @IBOutlet weak var flagImageView: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +32,14 @@ class UserDetailViewController: UIViewController {
         secondaryInfoLabel.text = user?.getSecondaryLabel()
         profileCardBackgroundView.layer.cornerRadius = 12
         profileCardBackgroundView.layer.masksToBounds = true
+        if let countryCode = user.country?.countryCode {
+            flagImageView.layer.cornerRadius = 4
+            flagImageView.clipsToBounds = true
+            flagImageView.contentMode = .scaleAspectFill
+            flagImageView.image = Country(countryCode: countryCode).flag
+        } else {
+            flagImageView.removeFromSuperview()
+        }
     }
 
 }
