@@ -9,7 +9,7 @@
 import UIKit
 
 protocol HomeTableViewCellDelegate {
-    func shouldPlayPronunciation(withId id: String)
+    func shouldPlayPronunciation(withId id: String, from indexPath: IndexPath)
 }
 
 class HomeTableViewCell: UITableViewCell {
@@ -21,10 +21,14 @@ class HomeTableViewCell: UITableViewCell {
     @IBOutlet weak var secondaryInfoLabel: UILabel!
     @IBOutlet weak var statusView: UIView!
     @IBOutlet weak var playButton: UIButton!
+    @IBOutlet weak var audioLoadingActivityIndicator: UIActivityIndicatorView!
 
     @IBAction func didTapPlayButton(_ sender: UIButton) {
-        guard let delegate = delegate, let userId = userId else { return }
-        delegate.shouldPlayPronunciation(withId: userId)
+        guard let delegate = delegate,
+              let userId = userId,
+              let tableView = self.superview as? UITableView,
+              let indexPath = tableView.indexPath(for: self) else { return }
+        delegate.shouldPlayPronunciation(withId: userId, from: indexPath)
     }
 
     override func awakeFromNib() {

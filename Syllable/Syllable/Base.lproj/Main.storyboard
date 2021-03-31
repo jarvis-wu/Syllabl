@@ -273,6 +273,9 @@
                                                         <action selector="didTapPlayButton:" destination="TOZ-3m-gOI" eventType="touchUpInside" id="xog-cD-Xkx"/>
                                                     </connections>
                                                 </button>
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="ckq-lz-6j0">
+                                                    <rect key="frame" x="348" y="25.5" width="20" height="20"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="jpi-C1-V9p" firstAttribute="leading" secondItem="cXa-nd-56d" secondAttribute="trailing" constant="15" id="1Vz-Yl-50j"/>
@@ -281,11 +284,14 @@
                                                 <constraint firstItem="cXa-nd-56d" firstAttribute="centerY" secondItem="Bf8-QB-zWV" secondAttribute="centerY" id="CW3-8m-5SC"/>
                                                 <constraint firstItem="5bm-fe-zgB" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="jpi-C1-V9p" secondAttribute="trailing" constant="8" symbolic="YES" id="F2U-ef-rzF"/>
                                                 <constraint firstItem="5bm-fe-zgB" firstAttribute="centerY" secondItem="Bf8-QB-zWV" secondAttribute="centerY" id="MyS-mq-onU"/>
+                                                <constraint firstItem="ckq-lz-6j0" firstAttribute="centerX" secondItem="5bm-fe-zgB" secondAttribute="centerX" id="Sp9-RS-HIe"/>
+                                                <constraint firstItem="ckq-lz-6j0" firstAttribute="centerY" secondItem="5bm-fe-zgB" secondAttribute="centerY" id="U1R-ZB-qX9"/>
                                                 <constraint firstItem="cXa-nd-56d" firstAttribute="leading" secondItem="Bf8-QB-zWV" secondAttribute="leading" constant="15" id="YAu-X9-1Bv"/>
                                                 <constraint firstAttribute="trailing" secondItem="5bm-fe-zgB" secondAttribute="trailing" constant="5" id="li3-0y-cba"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="audioLoadingActivityIndicator" destination="ckq-lz-6j0" id="AbI-b1-RAz"/>
                                             <outlet property="nameLabel" destination="4M7-kh-2AE" id="NLY-sI-Vbr"/>
                                             <outlet property="playButton" destination="5bm-fe-zgB" id="Zxa-gS-N1J"/>
                                             <outlet property="profileImageView" destination="cXa-nd-56d" id="3bE-xP-owc"/>

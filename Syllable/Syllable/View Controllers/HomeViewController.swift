@@ -31,6 +31,8 @@ class HomeViewController: UIViewController {
     }
     var filteredUsers = [User]()
 
+    var playingCell: HomeTableViewCell?
+
     var databaseRef = Database.database().reference()
     var storageRef = Storage.storage().reference()
     var refHandle: DatabaseHandle!
@@ -195,23 +197,40 @@ extension HomeViewController: UISearchResultsUpdating {
 
 extension HomeViewController: HomeTableViewCellDelegate {
 
-    func shouldPlayPronunciation(withId id: String) {
-        print("retrieve recording and play for user \(id).")
+    func shouldPlayPronunciation(withId id: String, from indexPath: IndexPath) {
         lightHapticGenerator.prepare()
         lightHapticGenerator.impactOccurred()
+        let cell = tableView.cellForRow(at: indexPath) as! HomeTableViewCell
+        cell.playButton.isHidden = true
+        cell.audioLoadingActivityIndicator.startAnimating()
         let audioRef = self.storageRef.child("audio-recordings/\(id).m4a")
         audioRef.getData(maxSize: 1 * 1024 * 1024) { (data, error) in
             if let error = error {
                 print("Error when downloading the audio recording: \(error.localizedDescription)")
             } else {
+                cell.audioLoadingActivityIndicator.stopAnimating()
+                cell.playButton.isHidden = false
+                cell.playButton.tintColor = .systemBlue
+                self.playingCell = cell
                 do {
                     self.audioPlayer = try AVAudioPlayer(data: data!)
+                    self.audioPlayer.delegate = self
                     self.audioPlayer.play()
                     // add animation
                 } catch {
                     print("play failed")
                 }
             }
+        }
+    }
+
+}
+
+extension HomeViewController: AVAudioPlayerDelegate {
+
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        if let cell = playingCell {
+            cell.playButton.tintColor = .lightGray
         }
     }
 
