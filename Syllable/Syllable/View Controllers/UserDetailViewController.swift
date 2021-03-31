@@ -10,6 +10,7 @@ import UIKit
 import SKCountryPicker
 import AVFoundation
 import FirebaseStorage
+import FirebaseDatabase
 
 class UserDetailViewController: UIViewController {
 
@@ -18,6 +19,7 @@ class UserDetailViewController: UIViewController {
     var audioPlayer: AVAudioPlayer!
     var audioSession: AVAudioSession!
     var storageRef = Storage.storage().reference()
+    var databaseRef = Database.database().reference()
 
     /// - TODO: put everything in a scroll view
 
@@ -42,11 +44,14 @@ class UserDetailViewController: UIViewController {
     @IBOutlet weak var needPracticeButton: UIButton!
     @IBOutlet weak var discardButton: UIButton!
     @IBOutlet weak var requestEvaluationButton: SButton!
+    @IBOutlet weak var learnedCheckmarkView: UIView!
+    @IBOutlet weak var needPracticeCheckmarkView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         preparePlaying()
+        lightHapticGenerator.prepare()
         loadAudio()
     }
 
@@ -57,7 +62,7 @@ class UserDetailViewController: UIViewController {
         profileImageView.image = user?.profilePicture
         fullNameLabel.text = user?.getFullName()
         secondaryInfoLabel.text = user?.getSecondaryLabel()
-        bioLabel.text = user.bio
+        bioLabel.text = user.getBio()
         if let countryCode = user.country?.countryCode {
             flagImageView.layer.cornerRadius = 4
             flagImageView.clipsToBounds = true
@@ -80,6 +85,24 @@ class UserDetailViewController: UIViewController {
         needPracticeButton.layer.cornerRadius = needPracticeButton.frame.height / 2
         requestEvaluationButton.disable()
         discardButton.isEnabled = false
+
+        configureStatus()
+    }
+
+    func configureStatus() {
+        // show current learning status, if any
+        if user.status != .learned {
+            learnedCheckmarkView.isHidden = true
+        }
+        if user.status != .needPractice {
+            needPracticeCheckmarkView.isHidden = true
+        }
+        learnedCheckmarkView.layer.cornerRadius = learnedCheckmarkView.frame.height / 2
+        learnedCheckmarkView.layer.borderColor = UIColor.systemGreen.cgColor
+        learnedCheckmarkView.layer.borderWidth = 1.5
+        needPracticeCheckmarkView.layer.cornerRadius = needPracticeCheckmarkView.frame.height / 2
+        needPracticeCheckmarkView.layer.borderColor = UIColor.systemYellow.cgColor
+        needPracticeCheckmarkView.layer.borderWidth = 1.5
     }
 
     func getDocumentsDirectory() -> URL {
@@ -89,8 +112,8 @@ class UserDetailViewController: UIViewController {
 
     func loadAudio() {
         print("retrieve recording and play for user \(user.id).")
-        lightHapticGenerator.prepare()
         lightHapticGenerator.impactOccurred()
+        lightHapticGenerator.prepare()
 
         let localUrl = getDocumentsDirectory().appendingPathComponent("\(user.id).m4a")
         let audioRef = self.storageRef.child("audio-recordings/\(user.id).m4a")
@@ -125,8 +148,8 @@ class UserDetailViewController: UIViewController {
         let asset = AVURLAsset(url: audioURL, options: nil)
         let audioDuration = asset.duration
         let audioDurationSeconds = CMTimeGetSeconds(audioDuration)
-        lightHapticGenerator.prepare()
         lightHapticGenerator.impactOccurred()
+        lightHapticGenerator.prepare()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
@@ -139,6 +162,47 @@ class UserDetailViewController: UIViewController {
         UIView.animate(withDuration: audioDurationSeconds) {
             self.waveformView.highlightedSamples = Range<Int>(0...self.waveformView.totalSamples)
         }
+    }
+
+    @IBAction func didTapLearnedButton(_ sender: UIButton) {
+        lightHapticGenerator.impactOccurred()
+        lightHapticGenerator.prepare()
+        if user.status == .learned {
+            print("already learned")
+            // should we provide a way to deselect a status here??
+        } else {
+            databaseRef.child("statuses/\(User.currentUser!.id)/\(user.id)").setValue("learned") { (error, reference) in
+                if let error = error {
+                    print("Error when updating status: \(error.localizedDescription)")
+                } else {
+                    self.learnedCheckmarkView.isHidden = false
+                    self.needPracticeCheckmarkView.isHidden = true
+                }
+            }
+        }
+    }
+
+    @IBAction func didTapNeedPracticeButton(_ sender: UIButton) {
+        lightHapticGenerator.impactOccurred()
+        lightHapticGenerator.prepare()
+        if user.status == .needPractice {
+            print("already needPractice")
+            // should we provide a way to deselect a status here??
+        } else {
+            databaseRef.child("statuses/\(User.currentUser!.id)/\(user.id)").setValue("needPractice") { (error, reference) in
+                if let error = error {
+                    print("Error when updating status: \(error.localizedDescription)")
+                } else {
+                    self.learnedCheckmarkView.isHidden = true
+                    self.needPracticeCheckmarkView.isHidden = false
+                }
+            }
+        }
+    }
+
+    /// - TODO: figure out a way to refresh statuses when going back to home screen
+
+    @IBAction func didTapRequestEvaluationButton(_ sender: UIButton) {
     }
 
 }

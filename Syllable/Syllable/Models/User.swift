@@ -134,6 +134,10 @@ class User {
         return "\(program) \(classYear)"
     }
 
+    func getBio() -> String? {
+        return bio ?? "Roses are red, violets are blue, this user chose to be mysterious and did not leave any clue......"
+    }
+
     func filledAllRequiredFields() -> Bool {
         return firstName != nil && lastName != nil
     }

@@ -78,7 +78,7 @@ class HomeViewController: UIViewController {
             let dataDict = snapshot.value as? [String : [String : AnyObject]] ?? [:]
             for (userId, userInfoDict) in dataDict {
                 var status = Status.none
-                self.refHandle = self.databaseRef.child("statuses").child(currentUid).child(userId).observe(DataEventType.value, with: { (snapshot) in
+                self.refHandle = self.databaseRef.child("statuses/\(currentUid)/\(userId)").observe(DataEventType.value, with: { (snapshot) in
                     let statusString = snapshot.value as? String
                     switch statusString {
                     case "learned":
