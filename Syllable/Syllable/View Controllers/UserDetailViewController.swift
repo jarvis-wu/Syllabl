@@ -57,6 +57,7 @@ class UserDetailViewController: UIViewController {
         profileImageView.image = user?.profilePicture
         fullNameLabel.text = user?.getFullName()
         secondaryInfoLabel.text = user?.getSecondaryLabel()
+        bioLabel.text = user.bio
         if let countryCode = user.country?.countryCode {
             flagImageView.layer.cornerRadius = 4
             flagImageView.clipsToBounds = true

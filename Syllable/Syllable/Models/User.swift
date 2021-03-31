@@ -27,9 +27,11 @@ class User {
     public private(set) var middleName: String?
     public private(set) var lastName: String?
     public private(set) var country: SCountry?
-    public private(set) var faculty: String?
-    public private(set) var classNumber: String?
+    public private(set) var program: String?
+    public private(set) var classYear: String?
     public private(set) var profilePicture: UIImage?
+    public private(set) var bio: String?
+
     public private(set) var status: Status = .none
 
     var delegate: UserEditDelegate?
@@ -41,17 +43,19 @@ class User {
          middleName: String? = nil,
          lastName: String? = nil,
          country: SCountry? = nil,
-         faculty: String? = nil,
-         classNumber: String? = nil,
-         profilePicture: UIImage? = nil) {
+         program: String? = nil,
+         classYear: String? = nil,
+         profilePicture: UIImage? = nil,
+         bio: String? = nil) {
         self.id = id
         self.firstName = firstName
         self.middleName = middleName
         self.lastName = lastName
         self.country = country
-        self.faculty = faculty
-        self.classNumber = classNumber
-        self.profilePicture = nil
+        self.program = program
+        self.classYear = classYear
+        self.profilePicture = profilePicture
+        self.bio = bio
     }
 
     init(id: String, userInfoDict: [String : AnyObject], profilePicture: UIImage?, status: Status) {
@@ -65,8 +69,9 @@ class User {
         }
         self.setProfilePicture(profilePicture: profilePicture)
         self.setStatus(status: status)
-        // faculty
-        // class number
+        self.program = userInfoDict["program"] as? String
+        self.classYear = userInfoDict["classYear"] as? String
+        self.bio = userInfoDict["bio"] as? String
     }
 
     func setFirstName(firstName: String?) {
@@ -89,13 +94,13 @@ class User {
         delegate?.didUpdateUserInformation()
     }
 
-    func setFaculty(faculty: String?) {
-        self.faculty = (faculty == "" ? nil : faculty)
+    func setProgram(program: String?) {
+        self.program = (program == "" ? nil : program)
         delegate?.didUpdateUserInformation()
     }
 
-    func setClassNumber(classNumber: String?) {
-        self.classNumber = (classNumber == "" ? nil : classNumber)
+    func setClassYear(classYear: String?) {
+        self.classYear = (classYear == "" ? nil : classYear)
         delegate?.didUpdateUserInformation()
     }
 
@@ -104,9 +109,13 @@ class User {
         delegate?.didUpdateUserInformation()
     }
 
+    func setBio(bio: String?) {
+        self.bio = bio
+        delegate?.didUpdateUserInformation()
+    }
+
     func setStatus(status: Status) {
         self.status = status
-//        delegate?.didUpdateUserInformation()
     }
 
     func getFullName() -> String? {
@@ -121,12 +130,8 @@ class User {
     }
 
     func getSecondaryLabel() -> String? {
-        guard let faculty = faculty, let classNumber = classNumber else { return "Unknown faculty and class" }
-        return "\(faculty) \(classNumber)"
-    }
-
-    func getSelfRecording() {
-        // get the file? url?
+        guard let program = program, let classYear = classYear else { return "Unknown program and class" }
+        return "\(program) \(classYear)"
     }
 
     func filledAllRequiredFields() -> Bool {
