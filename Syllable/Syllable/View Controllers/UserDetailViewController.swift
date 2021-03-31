@@ -177,6 +177,7 @@ class UserDetailViewController: UIViewController {
                 } else {
                     self.learnedCheckmarkView.isHidden = false
                     self.needPracticeCheckmarkView.isHidden = true
+                    self.user.setStatus(status: .learned)
                 }
             }
         }
@@ -195,6 +196,7 @@ class UserDetailViewController: UIViewController {
                 } else {
                     self.learnedCheckmarkView.isHidden = true
                     self.needPracticeCheckmarkView.isHidden = false
+                    self.user.setStatus(status: .needPractice)
                 }
             }
         }

@@ -23,7 +23,7 @@ class HomeViewController: UIViewController {
     var totalUsers = 0 // this might not work later if we have pagination
     var users = [User]() {
         didSet {
-            if users.count == totalUsers { // in this way we only load the table once
+            if totalUsers != 0 && users.count == totalUsers { // in this way we only load the table once
                 users.sort { $0.lastName! < $1.lastName! }
                 tableView.reloadData()
             }
@@ -78,8 +78,6 @@ class HomeViewController: UIViewController {
         }
     }
 
-    /// - TODO: local "users" not updated after setting status in user detail controller
-
     /// - TODO: pagination?
     private func populateUsers() {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
@@ -111,7 +109,15 @@ class HomeViewController: UIViewController {
                         if user.id == Auth.auth().currentUser?.uid {
                             User.currentUser = user
                         }
-                        self.users.append(user)
+                        if self.users.count != 0 && self.users.count == self.totalUsers {
+                            // updating
+                            if let index = self.users.firstIndex(where: {$0.id == user.id}) {
+                                self.users[index] = user
+                            }
+                        } else {
+                            // populating
+                            self.users.append(user)
+                        }
                     }
                 })
             }
