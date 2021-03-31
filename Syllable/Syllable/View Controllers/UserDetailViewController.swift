@@ -38,6 +38,7 @@ class UserDetailViewController: UIViewController {
 
     @IBOutlet weak var practiceCardBackgroundView: UIView!
     @IBOutlet weak var practiceTitleLabel: UILabel!
+    @IBOutlet weak var threeButtonsStackView: UIStackView!
     @IBOutlet weak var recordButtonBackgroundView: UIView!
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var learnedButton: UIButton!
@@ -87,6 +88,13 @@ class UserDetailViewController: UIViewController {
         discardButton.isEnabled = false
 
         configureStatus()
+
+        if user.id == User.currentUser!.id {
+            practiceTitleLabel.text = "To edit your own profile and name pronunciation, go to Settings."
+            threeButtonsStackView.isHidden = true
+            discardButton.isHidden = true
+            requestEvaluationButton.isHidden = true
+        }
     }
 
     func configureStatus() {
@@ -202,9 +210,8 @@ class UserDetailViewController: UIViewController {
         }
     }
 
-    /// - TODO: figure out a way to refresh statuses when going back to home screen
-
     @IBAction func didTapRequestEvaluationButton(_ sender: UIButton) {
+
     }
 
 }

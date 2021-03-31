@@ -131,7 +131,7 @@ class OnboardingViewController: UIViewController {
                     }
                 }
                 guard let originalPicture = self.newUser.profilePicture else { return }
-                ImageResizer.resize(image: originalPicture, maxByte: 800000) { image in
+                ImageResizer.resize(image: originalPicture, maxByte: 300000) { image in
                     guard let resizedImage = image else { return }
                     if let profilePictureData: Data = resizedImage.jpegData(compressionQuality: 1.0) {
                         let metadata = StorageMetadata()
