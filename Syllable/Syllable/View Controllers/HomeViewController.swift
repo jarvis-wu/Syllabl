@@ -20,7 +20,15 @@ enum Status {
 
 class HomeViewController: UIViewController {
 
-    var users = [User]()
+    var totalUsers = 0 // this might not work later if we have pagination
+    var users = [User]() {
+        didSet {
+            if users.count == totalUsers { // in this way we only load the table once
+                users.sort { $0.lastName! < $1.lastName! }
+                tableView.reloadData()
+            }
+        }
+    }
     var filteredUsers = [User]()
 
     var databaseRef = Database.database().reference()
@@ -70,12 +78,15 @@ class HomeViewController: UIViewController {
         }
     }
 
+    /// - TODO: local "users" not updated after setting status in user detail controller
+
     /// - TODO: pagination?
     private func populateUsers() {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         refHandle = databaseRef.child("users").observe(DataEventType.value, with: { (snapshot) in
             self.users = []
             let dataDict = snapshot.value as? [String : [String : AnyObject]] ?? [:]
+            self.totalUsers = dataDict.count
             for (userId, userInfoDict) in dataDict {
                 var status = Status.none
                 self.refHandle = self.databaseRef.child("statuses/\(currentUid)/\(userId)").observe(DataEventType.value, with: { (snapshot) in
@@ -101,7 +112,6 @@ class HomeViewController: UIViewController {
                             User.currentUser = user
                         }
                         self.users.append(user)
-                        self.tableView.reloadData() // inefficient?
                     }
                 })
             }
