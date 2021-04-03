@@ -10,19 +10,19 @@ import UIKit
 import AVFoundation
 import FirebaseStorage
 
-class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
+enum RecordPlayMode {
+    case record
+    case play
+}
 
-    enum Mode {
-        case record
-        case play
-    }
+class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
 
     var newUser: User!
 
-    var recordingSession: AVAudioSession!
+    var audioSession: AVAudioSession!
     var audioRecorder: AVAudioRecorder!
     var audioPlayer: AVAudioPlayer!
-    var mode = Mode.record {
+    var mode = RecordPlayMode.record {
         didSet {
             if mode == .play {
                 continueButton.enable()
@@ -43,6 +43,8 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     @IBAction func didTapStartOverButton(_ sender: UIButton) {
+        let audioURL = getDocumentsDirectory().appendingPathComponent("\(newUser.id).m4a")
+        try? FileManager.default.removeItem(at: audioURL)
         setMode(mode: .record)
     }
 
@@ -80,11 +82,11 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
     }
 
     func prepareRecording() {
-        recordingSession = AVAudioSession.sharedInstance()
+        audioSession = AVAudioSession.sharedInstance()
         do {
-            try recordingSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
-            try recordingSession.setActive(true)
-            recordingSession.requestRecordPermission() { [unowned self] allowed in
+            try audioSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
+            try audioSession.setActive(true)
+            audioSession.requestRecordPermission() { [unowned self] allowed in
                 DispatchQueue.main.async { if !allowed { self.audioPermissionDenied() } }
             }
         } catch {
@@ -97,7 +99,7 @@ class InitialRecordViewController: UIViewController, AVAudioRecorderDelegate {
         // display some error msg
     }
 
-    func setMode(mode: Mode) {
+    func setMode(mode: RecordPlayMode) {
         let animationDuration = self.mode == mode ? 0 : 0.3
         self.mode = mode
         switch mode {

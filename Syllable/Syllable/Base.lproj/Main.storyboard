@@ -449,6 +449,10 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hLv-sI-Hdd">
                                 <rect key="frame" x="16" y="400.5" width="382" height="244.5"/>
                                 <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fba-M8-xd1">
+                                        <rect key="frame" x="161" y="59.5" width="60" height="60"/>
+                                        <color key="backgroundColor" systemColor="systemBlueColor"/>
+                                    </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="fBm-JK-zb9">
                                         <rect key="frame" x="20" y="25" width="342" height="194.5"/>
                                         <subviews>
@@ -489,7 +493,7 @@
                                                                 </constraints>
                                                             </view>
                                                         </subviews>
-                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="trailing" secondItem="Geh-tV-5FL" secondAttribute="trailing" constant="4.5" id="Ucj-QU-m3J"/>
                                                             <constraint firstItem="frf-As-0Id" firstAttribute="leading" secondItem="7xr-Z4-0TI" secondAttribute="leading" id="Vcm-Sq-2VK"/>
@@ -512,7 +516,7 @@
                                                                 </state>
                                                             </button>
                                                         </subviews>
-                                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="60" id="2Fx-HG-JZV"/>
                                                             <constraint firstItem="7ni-oX-z7c" firstAttribute="centerY" secondItem="XGS-se-JDL" secondAttribute="centerY" id="Dho-YC-GuQ"/>
@@ -550,7 +554,7 @@
                                                                 </constraints>
                                                             </view>
                                                         </subviews>
-                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="trailing" secondItem="GE4-qx-a0J" secondAttribute="trailing" constant="4.5" id="1ye-9h-bVC"/>
                                                             <constraint firstAttribute="width" secondItem="OOS-c9-fQC" secondAttribute="width" id="6jx-zo-VLK"/>
@@ -568,6 +572,9 @@
                                                     <constraint firstAttribute="height" constant="20" id="qGs-lY-H0t"/>
                                                 </constraints>
                                                 <state key="normal" title="Discard"/>
+                                                <connections>
+                                                    <action selector="didTapDiscardButton:" destination="Xui-7s-KYV" eventType="touchUpInside" id="9bq-ug-ZcM"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rfQ-bG-I7W" customClass="SButton" customModule="Syllable" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="144.5" width="342" height="50"/>
@@ -592,9 +599,13 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstItem="fba-M8-xd1" firstAttribute="centerY" secondItem="XGS-se-JDL" secondAttribute="centerY" id="0vD-XJ-ZoJ"/>
                                     <constraint firstItem="fBm-JK-zb9" firstAttribute="leading" secondItem="hLv-sI-Hdd" secondAttribute="leading" constant="20" id="G6i-6t-cUe"/>
                                     <constraint firstItem="fBm-JK-zb9" firstAttribute="centerX" secondItem="hLv-sI-Hdd" secondAttribute="centerX" id="QGl-0Q-vSU"/>
                                     <constraint firstItem="fBm-JK-zb9" firstAttribute="top" secondItem="hLv-sI-Hdd" secondAttribute="top" constant="25" id="cI7-GQ-EMW"/>
+                                    <constraint firstItem="fba-M8-xd1" firstAttribute="width" secondItem="XGS-se-JDL" secondAttribute="width" id="hdi-Gr-jDu"/>
+                                    <constraint firstItem="fba-M8-xd1" firstAttribute="centerX" secondItem="XGS-se-JDL" secondAttribute="centerX" id="jAo-rO-br2"/>
+                                    <constraint firstItem="fba-M8-xd1" firstAttribute="height" secondItem="XGS-se-JDL" secondAttribute="height" id="uYM-5E-udO"/>
                                     <constraint firstAttribute="bottom" secondItem="fBm-JK-zb9" secondAttribute="bottom" constant="25" id="yiS-85-0dK"/>
                                 </constraints>
                             </view>
@@ -630,7 +641,7 @@
                         <outlet property="profileCardBackgroundView" destination="Aqn-Gz-5eW" id="Ieh-ry-B5C"/>
                         <outlet property="profileImageView" destination="yBb-1o-e8x" id="PSK-cl-2PG"/>
                         <outlet property="recordButton" destination="7ni-oX-z7c" id="T73-kf-N1R"/>
-                        <outlet property="recordButtonBackgroundView" destination="XGS-se-JDL" id="9k0-MW-sg3"/>
+                        <outlet property="recordButtonBackgroundView" destination="fba-M8-xd1" id="8dT-eb-bMP"/>
                         <outlet property="requestEvaluationButton" destination="rfQ-bG-I7W" id="JFK-LY-C5r"/>
                         <outlet property="secondaryInfoLabel" destination="7zU-ur-DAj" id="bsI-j9-rgS"/>
                         <outlet property="threeButtonsStackView" destination="nhZ-Wt-iuX" id="mLA-vJ-k8N"/>

@@ -12,14 +12,31 @@ import AVFoundation
 import FirebaseStorage
 import FirebaseDatabase
 
-class UserDetailViewController: UIViewController {
+class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
 
     var user: User!
+
     let lightHapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    let mediumHapticGenerator = UIImpactFeedbackGenerator(style: .medium)
+
     var audioPlayer: AVAudioPlayer!
+    var audioRecorder: AVAudioRecorder!
     var audioSession: AVAudioSession!
+
     var storageRef = Storage.storage().reference()
     var databaseRef = Database.database().reference()
+
+    var practiceMode = RecordPlayMode.record {
+        didSet {
+            if practiceMode == .play {
+                requestEvaluationButton.enable()
+                discardButton.isEnabled = true
+            } else {
+                requestEvaluationButton.disable()
+                discardButton.isEnabled = false
+            }
+        }
+    }
 
     /// - TODO: put everything in a scroll view
 
@@ -51,6 +68,8 @@ class UserDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setPracticeMode(mode: practiceMode)
+        addGestures()
         preparePlaying()
         lightHapticGenerator.prepare()
         loadAudio()
@@ -86,6 +105,9 @@ class UserDetailViewController: UIViewController {
         needPracticeButton.layer.cornerRadius = needPracticeButton.frame.height / 2
         requestEvaluationButton.disable()
         discardButton.isEnabled = false
+        recordButton.adjustsImageWhenHighlighted = false
+        learnedButton.adjustsImageWhenHighlighted = false
+        needPracticeButton.adjustsImageWhenHighlighted = false
 
         configureStatus()
 
@@ -94,7 +116,16 @@ class UserDetailViewController: UIViewController {
             threeButtonsStackView.isHidden = true
             discardButton.isHidden = true
             requestEvaluationButton.isHidden = true
+            recordButtonBackgroundView.isHidden = true
         }
+    }
+
+    func addGestures() {
+        let holdGesture = UILongPressGestureRecognizer(target: self, action: #selector(didTapHoldRecordButton))
+        holdGesture.minimumPressDuration = 0.3
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapRecordButton))
+        recordButton.addGestureRecognizer(holdGesture)
+        recordButton.addGestureRecognizer(tapGesture)
     }
 
     func configureStatus() {
@@ -210,8 +241,128 @@ class UserDetailViewController: UIViewController {
         }
     }
 
+    @IBAction func didTapDiscardButton(_ sender: UIButton) {
+        let currentUser = User.currentUser!
+        let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
+        let audioFilename = getDocumentsDirectory().appendingPathComponent(fileName)
+        try? FileManager.default.removeItem(at: audioFilename)
+        setPracticeMode(mode: .record)
+    }
+
     @IBAction func didTapRequestEvaluationButton(_ sender: UIButton) {
 
+    }
+
+    func setPracticeMode(mode: RecordPlayMode) {
+        let animationDuration = self.practiceMode == mode ? 0 : 0.3
+        self.practiceMode = mode
+        switch mode {
+        case .record:
+            UIView.animate(withDuration: animationDuration) {
+                self.recordButton.setImage(UIImage(systemName: "mic.fill"), for: .normal)
+                // self.startOverButton.isHidden = true
+            }
+        case .play:
+            UIView.animate(withDuration: animationDuration) {
+                self.recordButton.setImage(UIImage(systemName: "headphones"), for: .normal)
+                // self.startOverButton.isHidden = false
+            }
+        }
+    }
+
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        if !flag {
+            finishRecording(success: false)
+        }
+    }
+
+    func startRecording() {
+        let currentUser = User.currentUser!
+        let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
+        let audioFilename = getDocumentsDirectory().appendingPathComponent(fileName)
+
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+
+        mediumHapticGenerator.prepare()
+        mediumHapticGenerator.impactOccurred()
+
+        // need to have this delay, otherwise the haptic is not fired (yes super weird I know)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            do {
+                self.audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+                self.audioRecorder.delegate = self
+                self.audioRecorder.record()
+            } catch {
+                self.finishRecording(success: false)
+            }
+        }
+    }
+
+    func finishRecording(success: Bool) {
+        audioRecorder.stop()
+        audioRecorder = nil
+
+        lightHapticGenerator.prepare()
+        lightHapticGenerator.impactOccurred()
+
+        if success {
+            setPracticeMode(mode: .play)
+        } else {
+            setPracticeMode(mode: .record) // or error mode?
+        }
+    }
+
+    @objc func didTapHoldRecordButton(sender : UIGestureRecognizer) {
+        guard practiceMode == .record else { return }
+        if sender.state == .began {
+            guard audioRecorder == nil else { return }
+            startRecording()
+            // Begin animation
+            UIView.animate(withDuration: 0.8, delay: 0, options: [.repeat, .curveEaseInOut], animations: {
+                self.recordButtonBackgroundView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+                self.recordButtonBackgroundView.backgroundColor = .clear
+            })
+        } else if sender.state == .ended {
+            // End animation
+            self.recordButtonBackgroundView.layer.removeAllAnimations()
+            UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseIn], animations: {
+                self.recordButtonBackgroundView.backgroundColor = .clear
+            }) { (_) in
+                self.recordButtonBackgroundView.layer.removeAllAnimations()
+                self.recordButtonBackgroundView.transform = .identity
+                self.recordButtonBackgroundView.backgroundColor = .systemBlue
+            }
+            finishRecording(success: true)
+        }
+    }
+
+    @objc func didTapRecordButton(sender : UIGestureRecognizer) {
+        guard practiceMode == .play else { return }
+        let currentUser = User.currentUser!
+        let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
+        let audioURL = getDocumentsDirectory().appendingPathComponent(fileName)
+
+        do {
+            lightHapticGenerator.prepare()
+            lightHapticGenerator.impactOccurred()
+            UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseInOut], animations: {
+                self.recordButtonBackgroundView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+                self.recordButtonBackgroundView.backgroundColor = .clear
+            }) { (_) in
+                self.recordButtonBackgroundView.transform = .identity
+                self.recordButtonBackgroundView.backgroundColor = .systemBlue
+            }
+            audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+            audioPlayer.play()
+            // add animation
+        } catch {
+            print("play failed")
+        }
     }
 
 }
