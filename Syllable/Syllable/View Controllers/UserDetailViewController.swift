@@ -250,7 +250,29 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
     }
 
     @IBAction func didTapRequestEvaluationButton(_ sender: UIButton) {
-
+        requestEvaluationButton.disable()
+        let currentUser = User.currentUser!
+        let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
+        let audioURL = getDocumentsDirectory().appendingPathComponent(fileName)
+        let storageRef = Storage.storage().reference().child("practice-audio-recordings/\(fileName)")
+        let metadata = StorageMetadata()
+        metadata.contentType = "audio/m4a"
+        storageRef.putFile(from: audioURL, metadata: metadata) { (metadata, error) in
+            if let error = error {
+                print("Error when uploading practice recording: \(error.localizedDescription)")
+            } else {
+                self.setPracticeMode(mode: .record)
+                let timestamp = Date().timeIntervalSince1970
+                self.databaseRef.child("practices").child(self.user.id).child(User.currentUser!.id).setValue(timestamp) { (error, ref) in
+                    if let error = error {
+                        print("Error when uploading practice timestamp: \(error.localizedDescription)")
+                    } else {
+                        // push notificatios to the other user?
+                        // show toast message?
+                    }
+                }
+            }
+        }
     }
 
     func setPracticeMode(mode: RecordPlayMode) {
