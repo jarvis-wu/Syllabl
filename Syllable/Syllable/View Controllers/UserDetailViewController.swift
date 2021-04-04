@@ -38,7 +38,7 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
 
-    /// - TODO: put everything in a scroll view
+    /// - TODO: should allow the user to listen to their last practice audio
 
     @IBOutlet weak var profileCardBackgroundView: UIView!
     @IBOutlet weak var profileImageView: UIImageView!
