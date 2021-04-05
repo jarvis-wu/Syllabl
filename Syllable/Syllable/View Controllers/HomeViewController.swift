@@ -55,10 +55,12 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.shadowImage = UIImage()
         populateUsers()
         tableView.dataSource = self
         tableView.delegate = self
         tableView.tableFooterView = UIView()
+        tableView.tableHeaderView = UIView()
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search for a name or a program"
@@ -183,6 +185,12 @@ extension HomeViewController: UITableViewDelegate {
         userDetailViewController.user = users[indexPath.row]
         userDetailViewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(userDetailViewController, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
+            cell.separatorInset.left = cell.bounds.size.width
+        }
     }
 
 }

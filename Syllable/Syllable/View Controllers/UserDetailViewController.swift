@@ -11,6 +11,7 @@ import SKCountryPicker
 import AVFoundation
 import FirebaseStorage
 import FirebaseDatabase
+import TinyConstraints
 
 class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
 
@@ -74,14 +75,27 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var deleteLastPracticeButton: UIButton!
     @IBOutlet weak var evaluationResultLabel: UILabel!
 
+    var navbarBackgroundImage: UIImage?
+    var navbarShadowImage: UIImage?
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        navbarBackgroundImage = navigationController?.navigationBar.backgroundImage(for: UIBarMetrics.default)
+        navbarShadowImage = navigationController?.navigationBar.shadowImage
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navigationController?.navigationBar.shadowImage = UIImage()
         setupUI()
         setPracticeMode(mode: practiceMode)
         addGestures()
         preparePlaying()
         lightHapticGenerator.prepare()
         loadAudio()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.navigationBar.setBackgroundImage(navbarBackgroundImage, for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = navbarShadowImage
     }
 
     func setupUI() {

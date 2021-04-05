@@ -25,7 +25,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if Auth.auth().currentUser != nil {
             print("logged in")
-            let mainTabBarController = storyboard.instantiateViewController(identifier: "MainTabBarController")
+            let mainTabBarController = storyboard.instantiateViewController(identifier: "MainTabBarController") as! UITabBarController
+
+            if #available(iOS 13.0, *) {
+                let appearance = mainTabBarController.tabBar.standardAppearance
+                appearance.shadowImage = nil
+                appearance.shadowColor = nil
+                mainTabBarController.tabBar.standardAppearance = appearance
+            }
+
             self.window?.rootViewController = mainTabBarController
         } else {
             print("not logged in")
