@@ -64,25 +64,34 @@ class SettingsViewController: UIViewController {
 
     func setupHeader() {
         profilePictureImageView.layer.cornerRadius = profilePictureImageView.frame.height / 2
-        // What if currentUser is not stored yet?
+        /// - TODO: What if currentUser is not stored yet?
         guard let user = User.currentUser else { return }
         profilePictureImageView.image = user.profilePicture
         fullNameLabel.text = user.getFullName()
         secondaryLabel.text = user.getSecondaryLabel()
     }
 
+    @IBAction func didTapEditButton(_ sender: UIButton) {
+        tabBarController?.featureNotAvailable()
+    }
+
     func logout(){
-        do {
-            try Auth.auth().signOut()
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let rootNavigationViewController = storyboard.instantiateViewController(identifier: "RootNavigationViewController") as! UINavigationController
-            let landingViewController = storyboard.instantiateViewController(identifier: "LandingViewController")
-            rootNavigationViewController.viewControllers = [landingViewController]
-            rootNavigationViewController.modalPresentationStyle = .fullScreen
-            present(rootNavigationViewController, animated: true, completion: nil)
-        } catch let error {
-            print(error.localizedDescription)
-        }
+        let alertController = UIAlertController(title: "Confirm Logout", message: nil, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Log out", style: .default, handler: { (action) in
+            do {
+                try Auth.auth().signOut()
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let rootNavigationViewController = storyboard.instantiateViewController(identifier: "RootNavigationViewController") as! UINavigationController
+                let landingViewController = storyboard.instantiateViewController(identifier: "LandingViewController")
+                rootNavigationViewController.viewControllers = [landingViewController]
+                rootNavigationViewController.modalPresentationStyle = .fullScreen
+                self.present(rootNavigationViewController, animated: true, completion: nil) // is this the right way?
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
 
 }
@@ -101,6 +110,9 @@ extension SettingsViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsTableViewCell", for: indexPath) as? SettingsTableViewCell else { return UITableViewCell() }
         cell.labelView.text = settingsData[indexPath.section][indexPath.row].rowTitle
         cell.iconImageView.image = UIImage(named: settingsData[indexPath.section][indexPath.row].rowIconName)
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .systemGray6
+        cell.selectedBackgroundView = backgroundView
         return cell
     }
 
@@ -121,10 +133,39 @@ extension SettingsViewController: UITableViewDataSource {
 extension SettingsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 2 {
-            if indexPath.row == 0 {
-                logout()
+        tableView.deselectRow(at: indexPath, animated: true)
+        switch indexPath.section {
+        case 0:
+            switch indexPath.row {
+            case 0:
+                tabBarController?.featureNotAvailable()
+            case 1:
+                tabBarController?.featureNotAvailable()
+            case 2:
+                tabBarController?.featureNotAvailable()
+            case 3:
+                tabBarController?.featureNotAvailable()
+            default:
+                break
             }
+        case 1:
+            switch indexPath.row {
+            case 0:
+                tabBarController?.featureNotAvailable()
+            case 1:
+                tabBarController?.featureNotAvailable()
+            default:
+                break
+            }
+        case 2:
+            switch indexPath.row {
+            case 0:
+                logout()
+            default:
+                break
+            }
+        default:
+            break
         }
     }
 

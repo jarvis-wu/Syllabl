@@ -168,6 +168,9 @@ extension HomeViewController: UITableViewDataSource {
         case .needPractice:
             cell.statusView.backgroundColor = .systemYellow
         }
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .systemGray6
+        cell.selectedBackgroundView = backgroundView
         return cell
     }
 

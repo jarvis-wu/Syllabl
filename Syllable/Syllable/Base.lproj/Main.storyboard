@@ -884,6 +884,9 @@
                                             <rect key="frame" x="368" y="8" width="30" height="30"/>
                                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                             <state key="normal" title="Edit"/>
+                                            <connections>
+                                                <action selector="didTapEditButton:" destination="2VU-d9-nR5" eventType="touchUpInside" id="cud-iX-VyC"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>

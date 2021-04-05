@@ -75,6 +75,8 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var deleteLastPracticeButton: UIButton!
     @IBOutlet weak var evaluationResultLabel: UILabel!
 
+    /// - TODO: put a spinner on the last practice play button
+
     var navbarBackgroundImage: UIImage?
     var navbarShadowImage: UIImage?
 
