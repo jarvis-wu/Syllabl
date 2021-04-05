@@ -172,24 +172,29 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
     }
 
     func configureLastPractice() {
-        refHandle = self.databaseRef.child("practices/\(self.user.id)/\(User.currentUser!.id)").observe(DataEventType.value, with: { (snapshot) in
+        refHandle = self.databaseRef.child("practices/\(User.currentUser!.id)/\(self.user.id)").observe(DataEventType.value, with: { (snapshot) in
             if let dataDict = snapshot.value as? [String : AnyObject] {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "M/d/yyyy hh:mm"
                 let practiceTimestamp = dataDict["timestamp"] as? TimeInterval
                 let dateString = dateFormatter.string(from: Date(timeIntervalSince1970: practiceTimestamp!))
                 self.lastPracticeLabel.text = "Last practice \(dateString)"
-                let evaluationResult = dataDict["result"] as? String
-                var evaluationResultString = ""
-                switch evaluationResult {
-                case "good":
-                    evaluationResultString = "\(self.user.firstName!) thinks this is on spot!"
-                case "bad":
-                    evaluationResultString = "\(self.user.firstName!) thinks you need more practice."
-                default: // no evaluation yet
-                    evaluationResultString = "\(self.user.firstName!) hasn't submitted a feedback yet."
+                self.evaluationResultLabel.text = "\(self.user.firstName!) hasn't submitted a feedback yet."
+                self.databaseRef.child("evaluations/\(self.user.id)/\(User.currentUser!.id)").observe(DataEventType.value) { (snapshot) in
+                    if let dataDict = snapshot.value as? [String : AnyObject] {
+                        let evaluationResult = dataDict["result"] as? String
+                        var evaluationResultString = ""
+                        switch evaluationResult {
+                        case "good":
+                            evaluationResultString = "\(self.user.firstName!) thinks this is on spot!"
+                        case "bad":
+                            evaluationResultString = "\(self.user.firstName!) thinks you need more practice."
+                        default: // no evaluation yet
+                            break
+                        }
+                        self.evaluationResultLabel.text = evaluationResultString
+                    }
                 }
-                self.evaluationResultLabel.text = evaluationResultString
             } else {
                 self.lastPracticeBackgroundView.isHidden = true
             }
@@ -318,7 +323,7 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
             } else {
                 self.setPracticeMode(mode: .record)
                 let timestamp = Date().timeIntervalSince1970
-                self.databaseRef.child("practices/\(self.user.id)/\(User.currentUser!.id)/timestamp").setValue(timestamp) { (error, ref) in
+                self.databaseRef.child("practices/\(User.currentUser!.id)/\(self.user.id)/timestamp").setValue(timestamp) { (error, ref) in
                     if let error = error {
                         print("Error when uploading practice timestamp: \(error.localizedDescription)")
                     } else {
@@ -365,7 +370,7 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
                 if let error = error {
                     print("Error when deleting last practice audio from storage: \(error.localizedDescription)")
                 } else {
-                    self.databaseRef.child("practices/\(self.user.id)/\(User.currentUser!.id)").removeValue { (error, databaseRef) in
+                    self.databaseRef.child("practices/\(User.currentUser!.id)/\(self.user.id)").removeValue { (error, databaseRef) in
                         if let error = error {
                             print("Error when deleting last practice info from database: \(error.localizedDescription)")
                         } else {
