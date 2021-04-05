@@ -25,15 +25,18 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
 
     var storageRef = Storage.storage().reference()
     var databaseRef = Database.database().reference()
+    var refHandle: DatabaseHandle!
 
     var practiceMode = RecordPlayMode.record {
         didSet {
             if practiceMode == .play {
                 requestEvaluationButton.enable()
                 discardButton.isEnabled = true
+                discardButton.isHidden = false
             } else {
                 requestEvaluationButton.disable()
                 discardButton.isEnabled = false
+                discardButton.isHidden = true
             }
         }
     }
@@ -64,6 +67,12 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var requestEvaluationButton: SButton!
     @IBOutlet weak var learnedCheckmarkView: UIView!
     @IBOutlet weak var needPracticeCheckmarkView: UIView!
+
+    @IBOutlet weak var lastPracticeBackgroundView: UIView!
+    @IBOutlet weak var playLastPracticeButton: UIButton!
+    @IBOutlet weak var lastPracticeLabel: UILabel!
+    @IBOutlet weak var deleteLastPracticeButton: UIButton!
+    @IBOutlet weak var evaluationResultLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,11 +114,15 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
         needPracticeButton.layer.cornerRadius = needPracticeButton.frame.height / 2
         requestEvaluationButton.disable()
         discardButton.isEnabled = false
+        discardButton.isHidden = true
         recordButton.adjustsImageWhenHighlighted = false
         learnedButton.adjustsImageWhenHighlighted = false
         needPracticeButton.adjustsImageWhenHighlighted = false
 
+        lastPracticeBackgroundView.layer.cornerRadius = 12
+
         configureStatus()
+        configureLastPractice()
 
         if user.id == User.currentUser!.id {
             practiceTitleLabel.text = "To edit your own profile and name pronunciation, go to Settings."
@@ -142,6 +155,31 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
         needPracticeCheckmarkView.layer.cornerRadius = needPracticeCheckmarkView.frame.height / 2
         needPracticeCheckmarkView.layer.borderColor = UIColor.systemYellow.cgColor
         needPracticeCheckmarkView.layer.borderWidth = 1.5
+    }
+
+    func configureLastPractice() {
+        refHandle = self.databaseRef.child("practices/\(self.user.id)/\(User.currentUser!.id)").observe(DataEventType.value, with: { (snapshot) in
+            if let dataDict = snapshot.value as? [String : AnyObject] {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "M/d/yyyy hh:mm"
+                let practiceTimestamp = dataDict["timestamp"] as? TimeInterval
+                let dateString = dateFormatter.string(from: Date(timeIntervalSince1970: practiceTimestamp!))
+                self.lastPracticeLabel.text = "Last practice \(dateString)"
+                let evaluationResult = dataDict["result"] as? String
+                var evaluationResultString = ""
+                switch evaluationResult {
+                case "good":
+                    evaluationResultString = "\(self.user.firstName!) thinks this is on spot!"
+                case "bad":
+                    evaluationResultString = "\(self.user.firstName!) thinks you need more practice."
+                default: // no evaluation yet
+                    evaluationResultString = "\(self.user.firstName!) hasn't submitted a feedback yet."
+                }
+                self.evaluationResultLabel.text = evaluationResultString
+            } else {
+                self.lastPracticeBackgroundView.isHidden = true
+            }
+        })
     }
 
     func getDocumentsDirectory() -> URL {
@@ -200,7 +238,10 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
         self.waveformView.highlightedSamples = Range<Int>(0...0)
         UIView.animate(withDuration: audioDurationSeconds) {
             self.waveformView.highlightedSamples = Range<Int>(0...self.waveformView.totalSamples)
+        } completion: { (completed) in
+            self.waveformView.highlightedSamples = Range<Int>(0...0)
         }
+
     }
 
     @IBAction func didTapLearnedButton(_ sender: UIButton) {
@@ -254,24 +295,120 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
         let currentUser = User.currentUser!
         let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
         let audioURL = getDocumentsDirectory().appendingPathComponent(fileName)
-        let storageRef = Storage.storage().reference().child("practice-audio-recordings/\(fileName)")
+        let audioRef = Storage.storage().reference().child("practice-audio-recordings/\(fileName)")
         let metadata = StorageMetadata()
         metadata.contentType = "audio/m4a"
-        storageRef.putFile(from: audioURL, metadata: metadata) { (metadata, error) in
+        audioRef.putFile(from: audioURL, metadata: metadata) { (metadata, error) in
             if let error = error {
                 print("Error when uploading practice recording: \(error.localizedDescription)")
             } else {
                 self.setPracticeMode(mode: .record)
                 let timestamp = Date().timeIntervalSince1970
-                self.databaseRef.child("practices").child(self.user.id).child(User.currentUser!.id).setValue(timestamp) { (error, ref) in
+                self.databaseRef.child("practices/\(self.user.id)/\(User.currentUser!.id)/timestamp").setValue(timestamp) { (error, ref) in
                     if let error = error {
                         print("Error when uploading practice timestamp: \(error.localizedDescription)")
                     } else {
+                        self.configureLastPractice()
+                        self.lastPracticeBackgroundView.isHidden = false // show practice card
                         // push notificatios to the other user?
                         // show toast message?
                     }
                 }
             }
+        }
+    }
+
+    @IBAction func didTapPlayLastPracticeButton(_ sender: UIButton) {
+        lightHapticGenerator.prepare()
+        lightHapticGenerator.impactOccurred()
+        let currentUser = User.currentUser!
+        let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
+        let audioRef = Storage.storage().reference().child("practice-audio-recordings/\(fileName)")
+        audioRef.getData(maxSize: 1 * 1024 * 1024) { (data, error) in
+            if let error = error {
+                print("Error when downloading the practice recording: \(error.localizedDescription)")
+            } else {
+                do {
+                    self.audioPlayer = try AVAudioPlayer(data: data!)
+                    // self.audioPlayer.delegate = self
+                    self.audioPlayer.play()
+                    // add animation
+                } catch {
+                    print("play failed")
+                }
+            }
+        }
+    }
+
+    @IBAction func didTapDeleteLastPracticeButton(_ sender: UIButton) {
+        let alertController = UIAlertController(title: "Do you want to delete the submitted practice audio?", message: nil, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
+            // delete audio from storage; delete practice data from database
+            let currentUser = User.currentUser!
+            let fileName = "practice-\(currentUser.id)-\(self.user.id).m4a"
+            let audioRef = Storage.storage().reference().child("practice-audio-recordings/\(fileName)")
+            audioRef.delete { (error) in
+                if let error = error {
+                    print("Error when deleting last practice audio from storage: \(error.localizedDescription)")
+                } else {
+                    self.databaseRef.child("practices/\(self.user.id)/\(User.currentUser!.id)").removeValue { (error, databaseRef) in
+                        if let error = error {
+                            print("Error when deleting last practice info from database: \(error.localizedDescription)")
+                        } else {
+                            self.lastPracticeBackgroundView.isHidden = true
+                        }
+                    }
+                }
+            }
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alertController, animated: true, completion: nil)
+    }
+
+    @objc func didTapHoldRecordButton(sender : UIGestureRecognizer) {
+        guard practiceMode == .record else { return }
+        if sender.state == .began {
+            guard audioRecorder == nil else { return }
+            startRecording()
+            // Begin animation
+            UIView.animate(withDuration: 0.8, delay: 0, options: [.repeat, .curveEaseInOut], animations: {
+                self.recordButtonBackgroundView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+                self.recordButtonBackgroundView.backgroundColor = .clear
+            })
+        } else if sender.state == .ended {
+            // End animation
+            self.recordButtonBackgroundView.layer.removeAllAnimations()
+            UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseIn], animations: {
+                self.recordButtonBackgroundView.backgroundColor = .clear
+            }) { (_) in
+                self.recordButtonBackgroundView.layer.removeAllAnimations()
+                self.recordButtonBackgroundView.transform = .identity
+                self.recordButtonBackgroundView.backgroundColor = .systemBlue
+            }
+            finishRecording(success: true)
+        }
+    }
+
+    @objc func didTapRecordButton(sender : UIGestureRecognizer) {
+        guard practiceMode == .play else { return }
+        let currentUser = User.currentUser!
+        let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
+        let audioURL = getDocumentsDirectory().appendingPathComponent(fileName)
+        do {
+            lightHapticGenerator.prepare()
+            lightHapticGenerator.impactOccurred()
+            UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseInOut], animations: {
+                self.recordButtonBackgroundView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+                self.recordButtonBackgroundView.backgroundColor = .clear
+            }) { (_) in
+                self.recordButtonBackgroundView.transform = .identity
+                self.recordButtonBackgroundView.backgroundColor = .systemBlue
+            }
+            audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+            audioPlayer.play()
+            // add animation
+        } catch {
+            print("play failed")
         }
     }
 
@@ -336,54 +473,6 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
             setPracticeMode(mode: .play)
         } else {
             setPracticeMode(mode: .record) // or error mode?
-        }
-    }
-
-    @objc func didTapHoldRecordButton(sender : UIGestureRecognizer) {
-        guard practiceMode == .record else { return }
-        if sender.state == .began {
-            guard audioRecorder == nil else { return }
-            startRecording()
-            // Begin animation
-            UIView.animate(withDuration: 0.8, delay: 0, options: [.repeat, .curveEaseInOut], animations: {
-                self.recordButtonBackgroundView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
-                self.recordButtonBackgroundView.backgroundColor = .clear
-            })
-        } else if sender.state == .ended {
-            // End animation
-            self.recordButtonBackgroundView.layer.removeAllAnimations()
-            UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseIn], animations: {
-                self.recordButtonBackgroundView.backgroundColor = .clear
-            }) { (_) in
-                self.recordButtonBackgroundView.layer.removeAllAnimations()
-                self.recordButtonBackgroundView.transform = .identity
-                self.recordButtonBackgroundView.backgroundColor = .systemBlue
-            }
-            finishRecording(success: true)
-        }
-    }
-
-    @objc func didTapRecordButton(sender : UIGestureRecognizer) {
-        guard practiceMode == .play else { return }
-        let currentUser = User.currentUser!
-        let fileName = "practice-\(currentUser.id)-\(user.id).m4a"
-        let audioURL = getDocumentsDirectory().appendingPathComponent(fileName)
-
-        do {
-            lightHapticGenerator.prepare()
-            lightHapticGenerator.impactOccurred()
-            UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseInOut], animations: {
-                self.recordButtonBackgroundView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
-                self.recordButtonBackgroundView.backgroundColor = .clear
-            }) { (_) in
-                self.recordButtonBackgroundView.transform = .identity
-                self.recordButtonBackgroundView.backgroundColor = .systemBlue
-            }
-            audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
-            audioPlayer.play()
-            // add animation
-        } catch {
-            print("play failed")
         }
     }
 

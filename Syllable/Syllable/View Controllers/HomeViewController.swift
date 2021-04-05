@@ -181,6 +181,7 @@ extension HomeViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let userDetailViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "UserDetailViewController") as! UserDetailViewController
         userDetailViewController.user = users[indexPath.row]
+        userDetailViewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(userDetailViewController, animated: true)
     }
 
