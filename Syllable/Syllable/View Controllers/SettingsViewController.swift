@@ -57,14 +57,14 @@ class SettingsViewController: UIViewController {
         super.viewWillAppear(animated)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         super.viewWillDisappear(animated)
     }
 
     func setupHeader() {
         profilePictureImageView.layer.cornerRadius = profilePictureImageView.frame.height / 2
-        /// - TODO: What if currentUser is not stored yet?
+        /// - TODO: What if currentUser is not stored yet? should not depend on the currentUser -> get from db/cache instead...
         guard let user = User.currentUser else { return }
         profilePictureImageView.image = user.profilePicture
         fullNameLabel.text = user.getFullName()

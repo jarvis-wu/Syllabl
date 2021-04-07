@@ -17,6 +17,8 @@
 		3121020B25F9A059003F7F5C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3121020A25F9A059003F7F5C /* User.swift */; };
 		3121021526008108003F7F5C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3121021426008108003F7F5C /* GoogleService-Info.plist */; };
 		31993986261B45FA00616811 /* UIViewController+Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31993985261B45FA00616811 /* UIViewController+Toast.swift */; };
+		319939A1261CA7B900616811 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319939A0261CA7B900616811 /* NotificationsViewController.swift */; };
+		319939A4261CA80A00616811 /* GiveEvaluationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319939A3261CA80A00616811 /* GiveEvaluationTableViewCell.swift */; };
 		31A6615025F8651000D84747 /* InitialRecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A6614F25F8651000D84747 /* InitialRecordViewController.swift */; };
 		31B1CE8D26102121007C8ECA /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE8C26102120007C8ECA /* SettingsViewController.swift */; };
 		31B1CE90261023C6007C8ECA /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */; };
@@ -44,6 +46,8 @@
 		3121020A25F9A059003F7F5C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3121021426008108003F7F5C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		31993985261B45FA00616811 /* UIViewController+Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Toast.swift"; sourceTree = "<group>"; };
+		319939A0261CA7B900616811 /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
+		319939A3261CA80A00616811 /* GiveEvaluationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiveEvaluationTableViewCell.swift; sourceTree = "<group>"; };
 		31A6614F25F8651000D84747 /* InitialRecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialRecordViewController.swift; sourceTree = "<group>"; };
 		31B1CE8C26102120007C8ECA /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
@@ -126,6 +130,7 @@
 				31CA0EEF25E7E6D6002451DA /* HomeViewController.swift */,
 				31B1CE8C26102120007C8ECA /* SettingsViewController.swift */,
 				31B1CE962612B84C007C8ECA /* UserDetailViewController.swift */,
+				319939A0261CA7B900616811 /* NotificationsViewController.swift */,
 				31993985261B45FA00616811 /* UIViewController+Toast.swift */,
 			);
 			path = "View Controllers";
@@ -137,6 +142,7 @@
 				310B0CF825E7DD090067A8D4 /* SButton.swift */,
 				31CA0F1125E8B86E002451DA /* HomeTableViewCell.swift */,
 				31B1CE8F261023C6007C8ECA /* SettingsTableViewCell.swift */,
+				319939A3261CA80A00616811 /* GiveEvaluationTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -315,10 +321,12 @@
 				31B1CEA42612F69A007C8ECA /* FDAudioContext.swift in Sources */,
 				31B1CE972612B84C007C8ECA /* UserDetailViewController.swift in Sources */,
 				31CA0F1225E8B86E002451DA /* HomeTableViewCell.swift in Sources */,
+				319939A4261CA80A00616811 /* GiveEvaluationTableViewCell.swift in Sources */,
 				31B1CE8D26102121007C8ECA /* SettingsViewController.swift in Sources */,
 				31B1CE9426122160007C8ECA /* ImageResizer.swift in Sources */,
 				31993986261B45FA00616811 /* UIViewController+Toast.swift in Sources */,
 				31CA0EEE25E7E370002451DA /* OnboardingViewController.swift in Sources */,
+				319939A1261CA7B900616811 /* NotificationsViewController.swift in Sources */,
 				31A6615025F8651000D84747 /* InitialRecordViewController.swift in Sources */,
 				31B1CEA52612F69A007C8ECA /* FDWaveformView.swift in Sources */,
 				31B1CE90261023C6007C8ECA /* SettingsTableViewCell.swift in Sources */,

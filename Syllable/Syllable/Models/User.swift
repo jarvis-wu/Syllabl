@@ -120,13 +120,7 @@ class User {
 
     func getFullName() -> String? {
         guard let firstName = firstName, let lastName = lastName else { return nil }
-        let middleNameString: String
-        if let middleName = middleName {
-            middleNameString = "\(middleName) "
-        } else {
-            middleNameString = ""
-        }
-        return "\(firstName) \(middleNameString)\(lastName)"
+        return User.buildFullName(firstName: firstName, middleName: middleName, lastName: lastName)
     }
 
     func getSecondaryLabel() -> String? {
@@ -140,6 +134,16 @@ class User {
 
     func filledAllRequiredFields() -> Bool {
         return firstName != nil && lastName != nil
+    }
+
+    static func buildFullName(firstName: String, middleName: String?, lastName: String) -> String {
+        let middleNameString: String
+        if let middleName = middleName {
+            middleNameString = "\(middleName) "
+        } else {
+            middleNameString = ""
+        }
+        return "\(firstName) \(middleNameString)\(lastName)"
     }
 
 }

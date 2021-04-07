@@ -185,15 +185,9 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let userDetailViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "UserDetailViewController") as! UserDetailViewController
-        userDetailViewController.user = users[indexPath.row]
+        userDetailViewController.user = isFiltering ? filteredUsers[indexPath.row] : users[indexPath.row]
         userDetailViewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(userDetailViewController, animated: true)
-    }
-
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
-            cell.separatorInset.left = cell.bounds.size.width
-        }
     }
 
 }

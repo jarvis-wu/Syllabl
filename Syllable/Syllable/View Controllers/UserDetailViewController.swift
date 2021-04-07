@@ -178,14 +178,13 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
             if let dataDict = snapshot.value as? [String : AnyObject] {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "M/d/yyyy hh:mm"
-                let practiceTimestamp = dataDict["timestamp"] as? TimeInterval
+                let practiceTimestamp = dataDict["practiceTimestamp"] as? TimeInterval
                 let dateString = dateFormatter.string(from: Date(timeIntervalSince1970: practiceTimestamp!))
                 self.lastPracticeLabel.text = "Last practice \(dateString)"
-                self.evaluationResultLabel.text = "\(self.user.firstName!) hasn't submitted a feedback yet."
                 self.databaseRef.child("evaluations/\(self.user.id)/\(User.currentUser!.id)").observe(DataEventType.value) { (snapshot) in
                     if let dataDict = snapshot.value as? [String : AnyObject] {
                         let evaluationResult = dataDict["result"] as? String
-                        var evaluationResultString = ""
+                        var evaluationResultString = "\(self.user.firstName!) hasn't submitted a feedback yet."
                         switch evaluationResult {
                         case "good":
                             evaluationResultString = "\(self.user.firstName!) thinks this is on spot!"
@@ -325,14 +324,26 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
             } else {
                 self.setPracticeMode(mode: .record)
                 let timestamp = Date().timeIntervalSince1970
-                self.databaseRef.child("practices/\(User.currentUser!.id)/\(self.user.id)/timestamp").setValue(timestamp) { (error, ref) in
+                self.databaseRef.child("practices/\(User.currentUser!.id)/\(self.user.id)").setValue([
+                    "practiceTimestamp" : timestamp,
+                    "result" : "none"
+                ]) { (error, ref) in
                     if let error = error {
                         print("Error when uploading practice timestamp: \(error.localizedDescription)")
                     } else {
                         self.configureLastPractice()
                         self.lastPracticeBackgroundView.isHidden = false // show practice card
                         // push notificatios to the other user?
-                        // show toast message?
+                        self.databaseRef.child("evaluations/\(self.user.id)/\(User.currentUser!.id)").setValue([
+                            "practiceTimestamp" : timestamp,
+                            "result" : "none"
+                        ]) { (error, ref) in
+                            if let error = error {
+                                print("Error when uploading evaluation data: \(error.localizedDescription)")
+                            } else {
+                                // show toast message?
+                            }
+                        }
                     }
                 }
             }
