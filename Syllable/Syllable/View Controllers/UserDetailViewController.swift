@@ -136,6 +136,7 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
         needPracticeButton.adjustsImageWhenHighlighted = false
 
         lastPracticeBackgroundView.layer.cornerRadius = 12
+        lastPracticeBackgroundView.isHidden = true
 
         configureStatus()
         configureLastPractice()
@@ -197,10 +198,9 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
                             break
                         }
                         self.evaluationResultLabel.text = evaluationResultString
+                        self.lastPracticeBackgroundView.isHidden = false
                     }
                 }
-            } else {
-                self.lastPracticeBackgroundView.isHidden = true
             }
         })
     }
