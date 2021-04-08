@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import MessageUI
 
 enum SettingsSection: Int, CaseIterable {
     case settings = 0
@@ -73,6 +74,25 @@ class SettingsViewController: UIViewController {
 
     @IBAction func didTapEditButton(_ sender: UIButton) {
         tabBarController?.featureNotAvailable()
+    }
+
+    func sendContactEmail() {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients(["jarviszwu@gmail.com"])
+            mail.setMessageBody("<p>Contact Syllable's developer.</p>", isHTML: true)
+
+            present(mail, animated: true)
+        } else {
+            // show failure alert
+        }
+    }
+
+    func openFAQ() {
+        if let url = URL(string: "https://www.notion.so/Syllable-FAQs-080dd01ef3b74e7cb888fc1622c4f622") {
+            UIApplication.shared.open(url)
+        }
     }
 
     func logout(){
@@ -151,9 +171,9 @@ extension SettingsViewController: UITableViewDelegate {
         case 1:
             switch indexPath.row {
             case 0:
-                tabBarController?.featureNotAvailable()
+                sendContactEmail()
             case 1:
-                tabBarController?.featureNotAvailable()
+                openFAQ()
             default:
                 break
             }
@@ -167,6 +187,14 @@ extension SettingsViewController: UITableViewDelegate {
         default:
             break
         }
+    }
+
+}
+
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
+
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
 
 }
