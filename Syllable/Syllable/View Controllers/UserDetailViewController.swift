@@ -141,11 +141,14 @@ class UserDetailViewController: UIViewController, AVAudioRecorderDelegate {
         configureLastPractice()
 
         if user.id == User.currentUser!.id {
+            title = "Profile"
             practiceTitleLabel.text = "To edit your own profile and name pronunciation, go to Settings."
             threeButtonsStackView.isHidden = true
             discardButton.isHidden = true
             requestEvaluationButton.isHidden = true
             recordButtonBackgroundView.isHidden = true
+        } else {
+            title = "Practice"
         }
     }
 

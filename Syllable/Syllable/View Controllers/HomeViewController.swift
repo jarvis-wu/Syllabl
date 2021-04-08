@@ -40,12 +40,14 @@ class HomeViewController: UIViewController {
     var audioPlayer: AVAudioPlayer!
     var audioSession: AVAudioSession!
 
+    var filterButtonActive = false
+
     var isSearchBarEmpty: Bool {
-      return searchController.searchBar.text?.isEmpty ?? true
+        return searchController.searchBar.text?.isEmpty ?? true
     }
 
     var isFiltering: Bool {
-      return searchController.isActive && !isSearchBarEmpty
+        return (searchController.isActive && !isSearchBarEmpty) || filterButtonActive
     }
 
     let searchController = UISearchController(searchResultsController: nil)
@@ -67,6 +69,14 @@ class HomeViewController: UIViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
         preparePlaying()
+        if let filterButton = navigationItem.rightBarButtonItem {
+            if #available(iOS 14.0, *) {
+                filterButton.menu = createMenu()
+            } else {
+                // Fallback on earlier versions
+                // e.g. action sheet
+            }
+        }
     }
 
     func preparePlaying() {
@@ -129,11 +139,65 @@ class HomeViewController: UIViewController {
     }
 
     func filterContentForSearchText(_ searchText: String) {
-      filteredUsers = users.filter { (user: User) -> Bool in
-        let fullName = user.getFullName() ?? ""
-        return fullName.lowercased().contains(searchText.lowercased())
-      }
-      tableView.reloadData()
+        filteredUsers = users.filter { (user: User) -> Bool in
+            let fullNameMatch = (user.getFullName() ?? "").lowercased().contains(searchText.lowercased())
+            let facultyMatch = (user.program ?? "").lowercased().contains(searchText.lowercased())
+            let yearMatch = (user.classYear ?? "").lowercased().contains(searchText.lowercased())
+            return fullNameMatch || facultyMatch || yearMatch
+        }
+        tableView.reloadData()
+    }
+
+    func createMenu() -> UIMenu {
+        let needPractice = UIAction(
+            title: "Difficult"
+        ) { (_) in
+            self.filterButtonActive = true
+            self.title = "Filtering \"difficult\""
+            self.filteredUsers = self.users.filter({ (user: User) -> Bool in
+                return user.status == .needPractice
+            })
+            self.tableView.reloadData()
+        }
+
+        let noStatus = UIAction(
+            title: "Other"
+        ) { (_) in
+            self.filterButtonActive = true
+            self.title = "Filtering \"other\""
+            self.filteredUsers = self.users.filter({ (user: User) -> Bool in
+                return user.status == .none
+            })
+            self.tableView.reloadData()
+        }
+
+        let learned = UIAction(
+            title: "Learned"
+        ) { (_) in
+            self.filterButtonActive = true
+            self.title = "Filtering \"learned\""
+            self.filteredUsers = self.users.filter({ (user: User) -> Bool in
+                return user.status == .learned
+            })
+            self.tableView.reloadData()
+        }
+
+        let allItems = UIAction(
+            title: "All"
+        ) { (_) in
+            self.filterButtonActive = false
+            self.title = "Home"
+            self.filteredUsers = self.users
+            self.tableView.reloadData()
+        }
+
+        let menuActions = [needPractice, learned, noStatus, allItems]
+
+        let filterMenu = UIMenu(
+            title: "",
+            children: menuActions)
+
+        return filterMenu
     }
 
 }
@@ -142,7 +206,7 @@ extension HomeViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering {
-          return filteredUsers.count
+            return filteredUsers.count
         }
         return users.count
     }
@@ -197,7 +261,7 @@ extension HomeViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         filterContentForSearchText(searchBar.text!)
-  }
+    }
 
 }
 
