@@ -8,6 +8,8 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
+import FirebaseStorage
 import MessageUI
 
 enum SettingsSection: Int, CaseIterable {
@@ -37,6 +39,10 @@ let settingsData: [[SettingsRowData]] = [
 
 class SettingsViewController: UIViewController {
 
+    var databaseRef = Database.database().reference()
+    var storageRef = Storage.storage().reference()
+    var refHandle: DatabaseHandle!
+
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var profilePictureImageView: UIImageView!
@@ -65,11 +71,30 @@ class SettingsViewController: UIViewController {
 
     func setupHeader() {
         profilePictureImageView.layer.cornerRadius = profilePictureImageView.frame.height / 2
-        /// - TODO: What if currentUser is not stored yet? should not depend on the currentUser -> get from db/cache instead...
-        guard let user = User.currentUser else { return }
-        profilePictureImageView.image = user.profilePicture
-        fullNameLabel.text = user.getFullName()
-        secondaryLabel.text = user.getSecondaryLabel()
+        if let user = User.currentUser {
+            profilePictureImageView.image = user.profilePicture
+            fullNameLabel.text = user.getFullName()
+            secondaryLabel.text = user.getSecondaryLabel()
+        } else {
+            guard let currentUid = Auth.auth().currentUser?.uid else { return }
+            refHandle = databaseRef.child("users/\(currentUid)").observe(DataEventType.value, with: { (snapshot) in
+                let dataDict = snapshot.value as? [String : AnyObject] ?? [:]
+                var profileImage: UIImage? = nil
+                let profilePictureRef = self.storageRef.child("profile-pictures/\(currentUid).jpg")
+                profilePictureRef.getData(maxSize: 3 * 1024 * 1024) { (data, error) in
+                    if let error = error {
+                        print("Error when downloading the profile picture: \(error.localizedDescription)")
+                    } else {
+                        profileImage = UIImage(data: data!)
+                    }
+                    let user = User(id: currentUid, userInfoDict: dataDict, profilePicture: profileImage, status: .none)
+                    User.currentUser = user // duplication? harmless redundance?
+                    self.profilePictureImageView.image = user.profilePicture
+                    self.fullNameLabel.text = user.getFullName()
+                    self.secondaryLabel.text = user.getSecondaryLabel()
+                }
+            })
+        }
     }
 
     @IBAction func didTapEditButton(_ sender: UIButton) {
