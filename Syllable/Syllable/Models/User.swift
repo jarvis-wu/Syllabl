@@ -136,6 +136,10 @@ class User {
         return firstName != nil && lastName != nil
     }
 
+    func filledAllRequiredSecondaryFields() -> Bool {
+        return program != nil && classYear != nil
+    }
+
     static func buildFullName(firstName: String, middleName: String?, lastName: String) -> String {
         let middleNameString: String
         if let middleName = middleName {

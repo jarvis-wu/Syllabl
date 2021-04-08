@@ -13,17 +13,31 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
+enum Program: String, CaseIterable {
+    case softwareEngineering = "Software Engineering"
+    case computerEngineering = "Computer Engineering"
+    case computerScience = "Computer Science"
+}
+
 class OnboardingViewController: UIViewController {
 
     @IBOutlet weak var avatarButton: UIButton!
+    @IBOutlet weak var firstStackView: UIStackView!
+    @IBOutlet weak var secondStackView: UIStackView!
     @IBOutlet weak var firstNameField: UITextField!
     @IBOutlet weak var middleNameField: UITextField!
     @IBOutlet weak var lastNameField: UITextField!
     @IBOutlet weak var countryButton: UIButton!
+    @IBOutlet weak var programField: UITextField!
+    @IBOutlet weak var yearField: UITextField!
+    @IBOutlet weak var bioField: UITextField!
+    @IBOutlet weak var switchPageButton: UIButton!
     @IBOutlet weak var continueButton: SButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+
+    var isInFirstPage = true
 
     var newUser: User!
     var databaseRef = Database.database().reference()
@@ -38,12 +52,30 @@ class OnboardingViewController: UIViewController {
         avatarButton.adjustsImageWhenHighlighted = false
         setupEmptyAvatar()
 
+        secondStackView.isHidden = true
+        switchPageButton.isHidden = true
+
         firstNameField.delegate = self
         firstNameField.tag = 0
         middleNameField.delegate = self
         middleNameField.tag = 1
         lastNameField.delegate = self
         lastNameField.tag = 2
+
+        let programPicker = UIPickerView()
+        programPicker.tag = 3
+        programPicker.dataSource = self
+        programPicker.delegate = self
+        programField.inputView = programPicker
+
+        let yearPicker = UIPickerView()
+        yearPicker.tag = 4
+        yearPicker.dataSource = self
+        yearPicker.delegate = self
+        yearField.inputView = yearPicker
+
+        bioField.delegate = self
+        bioField.tag = 5
 
         for (index, field) in [lastNameField, middleNameField, firstNameField].enumerated() {
             field?.keyboardDistanceFromTextField = 50 + CGFloat(index * 60)
@@ -102,6 +134,20 @@ class OnboardingViewController: UIViewController {
         }
     }
 
+    @IBAction func didTapSwitchPageButton(_ sender: UIButton) {
+        if isInFirstPage {
+            firstStackView.isHidden = true
+            secondStackView.isHidden = false
+            isInFirstPage = false
+            switchPageButton.setImage(UIImage(systemName: "arrow.left.circle"), for: .normal)
+        } else {
+            secondStackView.isHidden = true
+            firstStackView.isHidden = false
+            isInFirstPage = true
+            switchPageButton.setImage(UIImage(systemName: "arrow.right.circle"), for: .normal)
+        }
+    }
+
     @IBAction func didTapContinueButton(_ sender: SButton) {
         continueButton.disable()
         activityIndicator.startAnimating()
@@ -116,7 +162,10 @@ class OnboardingViewController: UIViewController {
             "middleName" : newUser.middleName,
             "lastName" : newUser.lastName,
             "countryCode" : newUser.country?.countryCode,
-            "countryName" : newUser.country?.name
+            "countryName" : newUser.country?.name,
+            "program" : newUser.program,
+            "classYear" : newUser.classYear,
+            "bio" : newUser.bio
         ]) { (error, ref) in
             if let error = error {
                 print("Error when uploading basic info: \(error.localizedDescription)")
@@ -155,12 +204,11 @@ class OnboardingViewController: UIViewController {
             let selectedCountry = SCountry(name: country.countryName, countryCode: country.countryCode)
             self.newUser.setCountry(country: selectedCountry)
             self.countryButton.setTitle(selectedCountry.name, for: .normal)
-            self.countryButton.setTitleColor(.black, for: .normal)
+            self.countryButton.setTitleColor(.darkText, for: .normal)
         }
         countryPickerCountry.title = "Select a country"
         countryPickerCountry.labelFont = UIFont.systemFont(ofSize: 15)
         countryPickerCountry.separatorLineColor = .clear
-//        countryPickerCountry.favoriteCountriesLocaleIdentifiers = ["TW", "CA"]
         countryPickerCountry.flagStyle = .corner
         countryPickerCountry.isCountryDialHidden = true
     }
@@ -250,10 +298,13 @@ extension OnboardingViewController: UINavigationControllerDelegate, UIImagePicke
 extension OnboardingViewController: UserEditDelegate {
 
     func didUpdateUserInformation() {
-        if newUser.filledAllRequiredFields() {
+        if newUser.filledAllRequiredFields() && newUser.filledAllRequiredSecondaryFields() {
             continueButton.enable()
         } else {
             continueButton.disable()
+            if isInFirstPage && newUser.filledAllRequiredFields() {
+                switchPageButton.isHidden = false
+            }
         }
     }
 
@@ -270,8 +321,55 @@ extension OnboardingViewController: UITextFieldDelegate {
             newUser.setMiddleName(middleName: textField.text)
         case 2:
             newUser.setLastName(lastName: textField.text)
+        case 5:
+            newUser.setBio(bio: textField.text)
         default:
             return
+        }
+    }
+
+}
+
+extension OnboardingViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch pickerView.tag {
+        case 3:
+            return Program.allCases.count
+        case 4:
+            return 7 // last year, current year, current year + 1, ..., current year + 5
+        default:
+            return 0
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch pickerView.tag {
+        case 3:
+            return Program.allCases[row].rawValue
+        case 4:
+            return String(Calendar.current.component(.year, from: Date()) + (row - 1))
+        default:
+            return nil
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch pickerView.tag {
+        case 3:
+            print("selected program: \(Program.allCases[row])")
+            programField.text = Program.allCases[row].rawValue
+            newUser.setProgram(program: Program.allCases[row].rawValue)
+        case 4:
+            print("selected year: \(Calendar.current.component(.year, from: Date()) + (row - 1))")
+            yearField.text = String(Calendar.current.component(.year, from: Date()) + (row - 1))
+            newUser.setClassYear(classYear: String(Calendar.current.component(.year, from: Date()) + (row - 1)))
+        default:
+            print("unreachable")
         }
     }
 

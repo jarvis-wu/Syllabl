@@ -93,8 +93,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="NdW-bO-bM3">
-                                <rect key="frame" x="50" y="440" width="314" height="213"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="NdW-bO-bM3">
+                                <rect key="frame" x="50" y="433" width="314" height="198"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="First name*" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I1N-Xv-ywU">
                                         <rect key="frame" x="0.0" y="0.0" width="314" height="30"/>
@@ -102,17 +102,17 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Middle name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="54S-Sh-8um">
-                                        <rect key="frame" x="0.0" y="60" width="314" height="31.5"/>
+                                        <rect key="frame" x="0.0" y="55" width="314" height="31.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Last name*" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Fjy-CA-Msg">
-                                        <rect key="frame" x="0.0" y="121.5" width="314" height="31.5"/>
+                                        <rect key="frame" x="0.0" y="111.5" width="314" height="31.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9O-x3-WZW">
-                                        <rect key="frame" x="0.0" y="183" width="314" height="30"/>
+                                        <rect key="frame" x="0.0" y="168" width="314" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="zxl-8o-1xx"/>
                                         </constraints>
@@ -124,6 +124,26 @@
                                             <action selector="didTapLanguageOriginButton:" destination="kUA-so-Pg1" eventType="touchUpInside" id="2Vw-pO-Oqh"/>
                                         </connections>
                                     </button>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="eRH-uG-wmX">
+                                <rect key="frame" x="109" y="460" width="196" height="144.5"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Program" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bcK-y6-Dyb" userLabel="Program">
+                                        <rect key="frame" x="0.0" y="0.0" width="196" height="31.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Year of graduation" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="s37-dN-brI" userLabel="Year">
+                                        <rect key="frame" x="0.0" y="56.5" width="196" height="31.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Personal bio" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wPF-Go-Cgt" userLabel="Bio">
+                                        <rect key="frame" x="0.0" y="113" width="196" height="31.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kgT-n8-Ncn" customClass="SButton" customModule="Syllable" customModuleProvider="target">
@@ -164,10 +184,25 @@
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="7h0-96-onR">
                                 <rect key="frame" x="197" y="827" width="20" height="20"/>
                             </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9kn-SA-8Fl">
+                                <rect key="frame" x="187" y="702" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="9kn-SA-8Fl" secondAttribute="height" multiplier="1:1" id="H5A-FL-Wv7"/>
+                                    <constraint firstAttribute="height" constant="40" id="sjH-lc-58V"/>
+                                </constraints>
+                                <state key="normal">
+                                    <imageReference key="image" image="arrow.right.circle" catalog="system" symbolScale="default"/>
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="24"/>
+                                </state>
+                                <connections>
+                                    <action selector="didTapSwitchPageButton:" destination="kUA-so-Pg1" eventType="touchUpInside" id="pZa-B5-wBc"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="dfz-LE-YP3"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="eRH-uG-wmX" firstAttribute="centerY" secondItem="NdW-bO-bM3" secondAttribute="centerY" id="5Gx-PI-wTZ"/>
                             <constraint firstItem="7h0-96-onR" firstAttribute="centerX" secondItem="dfz-LE-YP3" secondAttribute="centerX" id="5kI-Qb-fkO"/>
                             <constraint firstItem="0Tn-yM-H22" firstAttribute="centerY" secondItem="dfz-LE-YP3" secondAttribute="centerY" multiplier="0.45" id="B9s-zf-wfh"/>
                             <constraint firstItem="dQ2-WA-1i6" firstAttribute="top" secondItem="0Tn-yM-H22" secondAttribute="bottom" constant="30" id="EF5-97-jkK"/>
@@ -176,22 +211,31 @@
                             <constraint firstItem="dQ2-WA-1i6" firstAttribute="centerX" secondItem="dfz-LE-YP3" secondAttribute="centerX" id="bFG-cp-3yT"/>
                             <constraint firstItem="dfz-LE-YP3" firstAttribute="bottom" secondItem="7h0-96-onR" secondAttribute="bottom" constant="15" id="dSE-k9-zfY"/>
                             <constraint firstItem="dfz-LE-YP3" firstAttribute="trailing" secondItem="NdW-bO-bM3" secondAttribute="trailing" constant="50" id="deR-0g-BPP"/>
+                            <constraint firstItem="9kn-SA-8Fl" firstAttribute="centerX" secondItem="dfz-LE-YP3" secondAttribute="centerX" id="i47-8z-Ilb"/>
                             <constraint firstItem="kgT-n8-Ncn" firstAttribute="leading" secondItem="dfz-LE-YP3" secondAttribute="leading" constant="30" id="mFo-DY-TKq"/>
                             <constraint firstItem="dQ2-WA-1i6" firstAttribute="leading" secondItem="dfz-LE-YP3" secondAttribute="leading" constant="30" id="ojL-IC-yD9"/>
+                            <constraint firstItem="kgT-n8-Ncn" firstAttribute="top" secondItem="9kn-SA-8Fl" secondAttribute="bottom" constant="20" id="rKQ-7x-a5R"/>
+                            <constraint firstItem="eRH-uG-wmX" firstAttribute="centerX" secondItem="NdW-bO-bM3" secondAttribute="centerX" id="rhn-Hb-wfi"/>
                             <constraint firstItem="dfz-LE-YP3" firstAttribute="bottom" secondItem="kgT-n8-Ncn" secondAttribute="bottom" constant="50" id="txA-D3-7cq"/>
                             <constraint firstItem="kgT-n8-Ncn" firstAttribute="centerX" secondItem="dfz-LE-YP3" secondAttribute="centerX" id="uJq-tP-dZm"/>
-                            <constraint firstItem="NdW-bO-bM3" firstAttribute="centerY" secondItem="dfz-LE-YP3" secondAttribute="centerY" multiplier="1.15" id="xA5-fE-kw8"/>
+                            <constraint firstItem="NdW-bO-bM3" firstAttribute="centerY" secondItem="dfz-LE-YP3" secondAttribute="centerY" multiplier="1.12" id="xA5-fE-kw8"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Onboarding" id="czg-Uj-55m"/>
                     <connections>
                         <outlet property="activityIndicator" destination="7h0-96-onR" id="WeL-ks-jGn"/>
                         <outlet property="avatarButton" destination="0Tn-yM-H22" id="b5f-Ul-KUO"/>
+                        <outlet property="bioField" destination="wPF-Go-Cgt" id="Zme-cu-4gx"/>
                         <outlet property="continueButton" destination="kgT-n8-Ncn" id="wdi-se-4s0"/>
                         <outlet property="countryButton" destination="Q9O-x3-WZW" id="S5R-bx-lHi"/>
                         <outlet property="firstNameField" destination="I1N-Xv-ywU" id="5Bn-fe-kwt"/>
+                        <outlet property="firstStackView" destination="NdW-bO-bM3" id="wD1-TJ-iEk"/>
                         <outlet property="lastNameField" destination="Fjy-CA-Msg" id="Mgc-63-wAH"/>
                         <outlet property="middleNameField" destination="54S-Sh-8um" id="RdV-64-mud"/>
+                        <outlet property="programField" destination="bcK-y6-Dyb" id="1bH-WP-eap"/>
+                        <outlet property="secondStackView" destination="eRH-uG-wmX" id="NOj-Ha-JXE"/>
+                        <outlet property="switchPageButton" destination="9kn-SA-8Fl" id="6hi-Yg-4MM"/>
+                        <outlet property="yearField" destination="s37-dN-brI" id="44n-EW-fJx"/>
                         <segue destination="TAV-27-vBH" kind="show" identifier="ShowInitialRecordViewController" id="0T8-hS-21H"/>
                     </connections>
                 </viewController>
@@ -1225,6 +1269,7 @@ MjI6MjYgQXByIDYsIDIwMjAQA
         <segue reference="I4V-Q0-3D9"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="arrow.right.circle" catalog="system" width="128" height="121"/>
         <image name="banner-icon" width="172" height="182"/>
         <image name="camera.fill" catalog="system" width="128" height="94"/>
         <image name="checkmark.seal.fill" catalog="system" width="128" height="128"/>
