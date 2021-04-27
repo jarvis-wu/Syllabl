@@ -323,7 +323,7 @@ MjI6MjYgQXByIDYsIDIwMjAQA
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="35" id="rJ7-gZ-uTA"/>
                                                                             </constraints>
-                                                                            <state key="normal" title="Good">
+                                                                            <state key="normal" title="Good job">
                                                                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             </state>
                                                                             <connections>
@@ -336,7 +336,7 @@ MjI6MjYgQXByIDYsIDIwMjAQA
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="35" id="FRj-bY-Ggs"/>
                                                                             </constraints>
-                                                                            <state key="normal" title="Bad">
+                                                                            <state key="normal" title="Practice more">
                                                                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             </state>
                                                                             <connections>

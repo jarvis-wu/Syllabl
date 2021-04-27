@@ -150,10 +150,10 @@ class HomeViewController: UIViewController {
 
     func createMenu() -> UIMenu {
         let needPractice = UIAction(
-            title: "Difficult"
+            title: "Need more practice"
         ) { (_) in
             self.filterButtonActive = true
-            self.title = "Filtering \"difficult\""
+            self.title = "Filtering \"need more practice\""
             self.filteredUsers = self.users.filter({ (user: User) -> Bool in
                 return user.status == .needPractice
             })
