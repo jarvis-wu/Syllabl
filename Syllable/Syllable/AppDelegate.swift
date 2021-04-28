@@ -11,6 +11,9 @@ import Firebase
 import FirebaseAuth
 import GoogleSignIn
 import IQKeyboardManagerSwift
+import AppCenter
+import AppCenterAnalytics
+import AppCenterCrashes
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,6 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FirebaseApp.configure()
         GIDSignIn.sharedInstance()?.clientID = FirebaseApp.app()?.options.clientID
+
+        AppCenter.start(withAppSecret: "d1676081-d61b-4498-b273-4ed247d4b31a", services:[
+          Analytics.self,
+          Crashes.self
+        ])
 
         return true
     }
